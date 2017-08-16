@@ -139,6 +139,8 @@ public class SDMediaPlayer
         }
     }
 
+    //----------data end----------
+
     /**
      * 是否播放状态
      *
