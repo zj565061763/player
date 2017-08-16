@@ -278,6 +278,21 @@ public class SDMediaPlayer
     }
 
     /**
+     * 恢复播放
+     */
+    public void resume()
+    {
+        switch (mState)
+        {
+            case Paused:
+                startPlayer();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
      * 停止播放
      */
     public void stop()
