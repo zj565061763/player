@@ -15,13 +15,13 @@ public class SDMediaPlayer
     private MediaPlayer mPlayer;
     private State mState = State.Idle;
 
-    private String mDataFilePath;
-    private String mDataUrl;
+    private String mDataPath;
     private int mDataRawResId;
 
     private boolean mHasInitialized;
 
-    private PlayerCallback mCallback;
+    private OnStateChangeCallback mOnStateChangeCallback;
+    private OnExceptionCallback mOnExceptionCallback;
 
     public SDMediaPlayer()
     {
@@ -52,24 +52,31 @@ public class SDMediaPlayer
         mPlayer.setOnCompletionListener(mOnCompletionListener);
     }
 
-    public State getState()
+    /**
+     * 设置状态变化回调
+     *
+     * @param onStateChangeCallback
+     */
+    public void setOnStateChangeCallback(OnStateChangeCallback onStateChangeCallback)
     {
-        return mState;
+        mOnStateChangeCallback = onStateChangeCallback;
     }
 
-    public void setCallback(PlayerCallback callback)
+    /**
+     * 设置异常回调
+     *
+     * @param onExceptionCallback
+     */
+    public void setOnExceptionCallback(OnExceptionCallback onExceptionCallback)
     {
-        this.mCallback = callback;
+        mOnExceptionCallback = onExceptionCallback;
     }
 
-    public String getDataFilePath()
-    {
-        return mDataFilePath;
-    }
+    //----------data start----------
 
-    public String getDataUrl()
+    public String getDataPath()
     {
-        return mDataUrl;
+        return mDataPath;
     }
 
     public int getDataRawResId()
@@ -77,6 +84,96 @@ public class SDMediaPlayer
         return mDataRawResId;
     }
 
+    /**
+     * 设置数据源
+     *
+     * @param path 本地文件路径或者链接地址
+     * @return
+     */
+    public boolean setDataSource(String path)
+    {
+        try
+        {
+            if (!TextUtils.isEmpty(mDataPath) && mDataPath.equals(path))
+            {
+                return true;
+            }
+
+            reset();
+            mPlayer.setDataSource(path);
+            mDataPath = path;
+            setState(State.Initialized);
+            return true;
+        } catch (Exception e)
+        {
+            notifyException(e);
+            return false;
+        }
+    }
+
+    /**
+     * 设置文件rawResId
+     *
+     * @param rawResId
+     * @param context
+     */
+    public boolean setDataRawResId(int rawResId, Context context)
+    {
+        try
+        {
+            if (mDataRawResId == rawResId)
+            {
+                return true;
+            }
+
+            reset();
+            AssetFileDescriptor afd = context.getResources().openRawResourceFd(rawResId);
+            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            mDataRawResId = rawResId;
+            setState(State.Initialized);
+            return true;
+        } catch (Exception e)
+        {
+            notifyException(e);
+            return false;
+        }
+    }
+
+    /**
+     * 是否播放状态
+     *
+     * @return
+     */
+    public boolean isPlaying()
+    {
+        return State.Playing == mState;
+    }
+
+    /**
+     * 是否暂停状态
+     *
+     * @return
+     */
+    public boolean isPaused()
+    {
+        return State.Paused == mState;
+    }
+
+    /**
+     * 是否已经初始化
+     *
+     * @return
+     */
+    public boolean hasInitialized()
+    {
+        return mHasInitialized;
+    }
+
+    /**
+     * 播放进度移动到某个位置
+     *
+     * @param position 某个时间点（毫秒）
+     */
     public void seekTo(int position)
     {
         try
@@ -137,190 +234,17 @@ public class SDMediaPlayer
     }
 
     /**
-     * 设置文件本地路径
-     *
-     * @param path
-     */
-    public boolean setDataFilePath(String path)
-    {
-        try
-        {
-            if (hasDataFilePath(path))
-            {
-                return true;
-            }
-
-            reset();
-            mPlayer.setDataSource(path);
-            this.mDataFilePath = path;
-            setState(State.Initialized);
-            notifyInitialized();
-            return true;
-        } catch (Exception e)
-        {
-            notifyException(e);
-            return false;
-        }
-    }
-
-    /**
-     * 设置文件网络链接
-     *
-     * @param url
-     */
-    public boolean setDataUrl(String url)
-    {
-        try
-        {
-            if (hasDataUrl(url))
-            {
-                return true;
-            }
-
-            reset();
-            mPlayer.setDataSource(url);
-            this.mDataUrl = url;
-            setState(State.Initialized);
-            notifyInitialized();
-            return true;
-        } catch (Exception e)
-        {
-            notifyException(e);
-            return false;
-        }
-    }
-
-    /**
-     * 设置文件rawResId
-     *
-     * @param rawResId
-     * @param context
-     */
-    public boolean setDataRawResId(int rawResId, Context context)
-    {
-        try
-        {
-            if (hasDataRawResId(rawResId))
-            {
-                return true;
-            }
-
-            reset();
-            AssetFileDescriptor afd = context.getResources().openRawResourceFd(rawResId);
-            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            this.mDataRawResId = rawResId;
-            setState(State.Initialized);
-            notifyInitialized();
-            return true;
-        } catch (Exception e)
-        {
-            notifyException(e);
-            return false;
-        }
-    }
-
-    /**
-     * 当前已经设置的url是否和新的url一致
-     *
-     * @param url
-     * @return
-     */
-    public boolean hasDataUrl(String url)
-    {
-        if (!TextUtils.isEmpty(mDataUrl) && mDataUrl.equals(url))
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
-    }
-
-    /**
-     * 当前当前已经设置的文件路径是否和新的path一致
-     *
-     * @param path
-     * @return
-     */
-    public boolean hasDataFilePath(String path)
-    {
-        if (!TextUtils.isEmpty(mDataFilePath) && mDataFilePath.equals(path))
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
-    }
-
-    /**
-     * 当前当前已经设置的rawResId是否和新的rawResId一致
-     *
-     * @param rawResId
-     * @return
-     */
-    public boolean hasDataRawResId(int rawResId)
-    {
-        if (this.mDataRawResId != 0 && this.mDataRawResId == rawResId)
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
-    }
-
-    /**
-     * 是否播放状态
-     *
-     * @return
-     */
-    public boolean isPlaying()
-    {
-        return State.Playing == mState;
-    }
-
-    /**
-     * 是否暂停状态
-     *
-     * @return
-     */
-    public boolean isPaused()
-    {
-        return State.Paused == mState;
-    }
-
-    /**
-     * 是否已经初始化
-     *
-     * @return
-     */
-    public boolean hasInitialized()
-    {
-        return mHasInitialized;
-    }
-
-    /**
      * 开始播放
      */
     public void start()
     {
         switch (mState)
         {
-            case Idle:
-
-                break;
             case Initialized:
                 prepareAsyncPlayer();
                 break;
-            case Preparing:
-
-                break;
             case Prepared:
                 startPlayer();
-                break;
-            case Playing:
-
                 break;
             case Paused:
                 startPlayer();
@@ -331,7 +255,6 @@ public class SDMediaPlayer
             case Stopped:
                 prepareAsyncPlayer();
                 break;
-
             default:
                 break;
         }
@@ -344,31 +267,9 @@ public class SDMediaPlayer
     {
         switch (mState)
         {
-            case Idle:
-
-                break;
-            case Initialized:
-
-                break;
-            case Preparing:
-
-                break;
-            case Prepared:
-
-                break;
             case Playing:
                 pausePlayer();
                 break;
-            case Paused:
-
-                break;
-            case Completed:
-
-                break;
-            case Stopped:
-
-                break;
-
             default:
                 break;
         }
@@ -381,15 +282,6 @@ public class SDMediaPlayer
     {
         switch (mState)
         {
-            case Idle:
-
-                break;
-            case Initialized:
-
-                break;
-            case Preparing:
-
-                break;
             case Prepared:
                 stopPlayer();
                 break;
@@ -402,10 +294,6 @@ public class SDMediaPlayer
             case Completed:
                 stopPlayer();
                 break;
-            case Stopped:
-
-                break;
-
             default:
                 break;
         }
@@ -429,160 +317,107 @@ public class SDMediaPlayer
         releasePlayer();
     }
 
+    /**
+     * 返回当前状态
+     *
+     * @return
+     */
+    public State getState()
+    {
+        return mState;
+    }
 
     private void setState(State state)
     {
-        this.mState = state;
+        if (mState != state)
+        {
+            final State oldState = mState;
+
+            mState = state;
+
+            if (mState == State.Initialized)
+            {
+                mHasInitialized = true;
+            }
+
+            if (mOnStateChangeCallback != null)
+            {
+                mOnStateChangeCallback.onStateChanged(oldState, mState, this);
+            }
+        }
     }
 
     private void prepareAsyncPlayer()
     {
         setState(State.Preparing);
-        notifyPreparing();
         mPlayer.prepareAsync();
     }
 
     private void startPlayer()
     {
         setState(State.Playing);
-        notifyPlaying();
         mPlayer.start();
     }
 
     private void pausePlayer()
     {
         setState(State.Paused);
-        notifyPaused();
         mPlayer.pause();
     }
 
     private void stopPlayer()
     {
         setState(State.Stopped);
-        notifyStopped();
         mPlayer.stop();
     }
 
     private void resetPlayer()
     {
         setState(State.Idle);
-        notifyReset();
         mPlayer.reset();
 
-        mDataFilePath = null;
-        mDataUrl = null;
-        mDataRawResId = 0;
-        mHasInitialized = false;
+        resetDataInternal();
     }
 
     private void releasePlayer()
     {
         setState(State.Released);
-        notifyReleased();
         mPlayer.release();
+
+        resetDataInternal();
     }
 
-    // notify
-    protected void notifyPreparing()
+    private void resetDataInternal()
     {
-        if (mCallback != null)
+        mDataPath = null;
+        mDataRawResId = 0;
+        mHasInitialized = false;
+    }
+
+    /**
+     * 通知异常
+     *
+     * @param e
+     */
+    private void notifyException(Exception e)
+    {
+        if (mOnExceptionCallback != null)
         {
-            mCallback.onPreparing();
+            mOnExceptionCallback.onException(e);
         }
     }
 
-    protected void notifyPrepared()
-    {
-        if (mCallback != null)
-        {
-            mCallback.onPrepared();
-        }
-    }
-
-    protected void notifyPlaying()
-    {
-        if (mCallback != null)
-        {
-            mCallback.onPlaying();
-        }
-    }
-
-    protected void notifyPaused()
-    {
-        if (mCallback != null)
-        {
-            mCallback.onPaused();
-        }
-    }
-
-    protected void notifyCompletion()
-    {
-        if (mCallback != null)
-        {
-            mCallback.onCompletion();
-        }
-    }
-
-    protected void notifyStopped()
-    {
-        if (mCallback != null)
-        {
-            mCallback.onStopped();
-        }
-    }
-
-    protected void notifyReset()
-    {
-        if (mCallback != null)
-        {
-            mCallback.onReset();
-        }
-    }
-
-    protected void notifyInitialized()
-    {
-        mHasInitialized = true;
-        if (mCallback != null)
-        {
-            mCallback.onInitialized();
-        }
-    }
-
-    protected void notifyReleased()
-    {
-        if (mCallback != null)
-        {
-            mCallback.onReleased();
-        }
-    }
-
-    protected void notifyError(MediaPlayer mp, int what, int extra)
-    {
-        if (mCallback != null)
-        {
-            mCallback.onError(what, extra);
-        }
-    }
-
-    protected void notifyException(Exception e)
-    {
-        if (mCallback != null)
-        {
-            mCallback.onException(e);
-        }
-    }
-
+    //----------listener start----------
     /**
      * 错误监听
      */
     private OnErrorListener mOnErrorListener = new OnErrorListener()
     {
-
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra)
         {
             resetPlayer();
-            notifyError(mp, what, extra);
+            notifyException(new RuntimeException(mp + ":" + String.valueOf(what) + "," + extra));
             return true;
         }
     };
@@ -592,12 +427,10 @@ public class SDMediaPlayer
      */
     private OnPreparedListener mOnPreparedListener = new OnPreparedListener()
     {
-
         @Override
         public void onPrepared(MediaPlayer mp)
         {
             setState(State.Prepared);
-            notifyPrepared();
             start();
         }
     };
@@ -611,9 +444,10 @@ public class SDMediaPlayer
         public void onCompletion(MediaPlayer mp)
         {
             setState(State.Completed);
-            notifyCompletion();
         }
     };
+
+    //----------listener end----------
 
     public enum State
     {
@@ -655,91 +489,13 @@ public class SDMediaPlayer
         Stopped;
     }
 
-    public interface PlayerCallback
+    public interface OnStateChangeCallback
     {
-        void onReleased();
+        void onStateChanged(State oldState, State newState, SDMediaPlayer player);
+    }
 
-        void onReset();
-
-        void onInitialized();
-
-        void onPreparing();
-
-        void onPrepared();
-
-        void onPlaying();
-
-        void onPaused();
-
-        void onCompletion();
-
-        void onStopped();
-
-        void onError(int what, int extra);
-
+    public interface OnExceptionCallback
+    {
         void onException(Exception e);
-    }
-
-    public static class SimplePlayerCallback implements PlayerCallback
-    {
-        @Override
-        public void onReleased()
-        {
-        }
-
-        @Override
-        public void onReset()
-        {
-        }
-
-        @Override
-        public void onInitialized()
-        {
-        }
-
-        @Override
-        public void onPreparing()
-        {
-        }
-
-        @Override
-        public void onPrepared()
-        {
-        }
-
-        @Override
-        public void onPlaying()
-        {
-        }
-
-        @Override
-        public void onPaused()
-        {
-        }
-
-        @Override
-        public void onCompletion()
-        {
-        }
-
-        @Override
-        public void onStopped()
-        {
-        }
-
-        @Override
-        public void onError(int what, int extra)
-        {
-        }
-
-        @Override
-        public void onException(Exception e)
-        {
-        }
-    }
-
-    public interface ProgressCallback
-    {
-        void onProgress(long current, long total);
     }
 }
