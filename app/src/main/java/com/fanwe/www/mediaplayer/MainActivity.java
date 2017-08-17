@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SurfaceView sfv_media;
 
-    private SDMediaPlayer mMediaPlayer = new SDMediaPlayer();
+    private SDMediaPlayer mPlayer = new SDMediaPlayer();
 
     private Button btn_start, btn_pause, btn_stop, btn_reset, btn_play_pause, btn_play_stop;
     private TextView tv_duration;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 if (fromUser)
                 {
-                    mMediaPlayer.seekTo(progress);
+                    mPlayer.seekTo(progress);
                 }
             }
 
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void surfaceCreated(SurfaceHolder holder)
             {
-                mMediaPlayer.setDisplay(holder);
+                mPlayer.setDisplay(holder);
             }
 
             @Override
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mMediaPlayer.setOnExceptionCallback(new SDMediaPlayer.OnExceptionCallback()
+        mPlayer.setOnExceptionCallback(new SDMediaPlayer.OnExceptionCallback()
         {
             @Override
             public void onException(Exception e)
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "onException:" + String.valueOf(e));
             }
         });
-        mMediaPlayer.setOnStateChangeCallback(new SDMediaPlayer.OnStateChangeCallback()
+        mPlayer.setOnStateChangeCallback(new SDMediaPlayer.OnStateChangeCallback()
         {
             @Override
             public void onStateChanged(SDMediaPlayer.State oldState, SDMediaPlayer.State newState, SDMediaPlayer player)
@@ -111,7 +111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         startDurationLooper();
-        mMediaPlayer.setLooping(true); //循环播放
+        mPlayer.setLooping(true); //循环播放
+
     }
 
     /**
@@ -124,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run()
             {
-                int currentPosition = mMediaPlayer.getCurrentPosition();
-                int totalDuration = mMediaPlayer.getDuration();
-                if (mMediaPlayer.getState() == SDMediaPlayer.State.Stopped)
+                int currentPosition = mPlayer.getCurrentPosition();
+                int totalDuration = mPlayer.getDuration();
+                if (mPlayer.getState() == SDMediaPlayer.State.Stopped)
                 {
                     currentPosition = 0;
                 }
@@ -147,24 +148,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.btn_start:
-                mMediaPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
-//                mMediaPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4");
-                mMediaPlayer.start(); //播放
+                mPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
+//                mPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4");
+                mPlayer.start(); //播放
                 break;
             case R.id.btn_pause:
-                mMediaPlayer.pause(); //暂停
+                mPlayer.pause(); //暂停
                 break;
             case R.id.btn_stop:
-                mMediaPlayer.stop(); //停止
+                mPlayer.stop(); //停止
                 break;
             case R.id.btn_reset:
-                mMediaPlayer.reset(); //重置
+                mPlayer.reset(); //重置
                 break;
             case R.id.btn_play_pause:
-                mMediaPlayer.performPlayPause(); // 播放/暂停
+                mPlayer.performPlayPause(); // 播放/暂停
                 break;
             case R.id.btn_play_stop:
-                mMediaPlayer.performPlayStop(); // 播放/停止
+                mPlayer.performPlayStop(); // 播放/停止
                 break;
         }
     }
@@ -173,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy()
     {
         super.onDestroy();
-        mMediaPlayer.release();
+        mPlayer.release();
         mLooper.stop();
     }
 }
