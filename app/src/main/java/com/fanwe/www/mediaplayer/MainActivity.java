@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.fanwe.library.looper.ISDLooper;
-import com.fanwe.library.looper.impl.SDSimpleLooper;
 import com.fanwe.library.media.player.SDMediaPlayer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
@@ -26,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn_start, btn_pause, btn_stop, btn_reset, btn_play_pause, btn_play_stop;
     private TextView tv_duration;
     private SeekBar sb_progress;
-    private ISDLooper mLooper = new SDSimpleLooper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -123,30 +120,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mPlayer.setLooping(true); //循环播放
-
-    }
-
-    /**
-     * 开始进度查询
-     */
-    private void startDurationLooper()
-    {
-        mLooper.start(100, new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                int currentPosition = mPlayer.getCurrentPosition();
-                int totalDuration = mPlayer.getDuration();
-                if (mPlayer.getState() == SDMediaPlayer.State.Stopped)
-                {
-                    currentPosition = 0;
-                }
-
-
-            }
-        });
     }
 
     @Override
@@ -182,6 +155,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         super.onDestroy();
         mPlayer.release();
-        mLooper.stop();
     }
 }
