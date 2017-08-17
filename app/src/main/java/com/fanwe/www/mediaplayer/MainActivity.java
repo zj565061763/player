@@ -7,6 +7,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.fanwe.library.looper.ISDLooper;
 import com.fanwe.library.looper.impl.SDSimpleLooper;
@@ -21,7 +22,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SDMediaPlayer mMediaPlayer = new SDMediaPlayer();
 
-    private Button btn_duration, btn_start, btn_pause, btn_stop, btn_play_pause, btn_play_stop;
+    private Button btn_start, btn_pause, btn_stop, btn_play_pause, btn_play_stop;
+    private TextView tv_duration;
     private ISDLooper mLooper = new SDSimpleLooper();
 
     @Override
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sfv_media = (SurfaceView) findViewById(R.id.sfv_media);
-        btn_duration = (Button) findViewById(R.id.btn_duration);
+        tv_duration = (TextView) findViewById(R.id.tv_duration);
         btn_start = (Button) findViewById(R.id.btn_start);
         btn_pause = (Button) findViewById(R.id.btn_pause);
         btn_stop = (Button) findViewById(R.id.btn_stop);
@@ -76,24 +78,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "onStateChanged:" + String.valueOf(newState));
                 if (newState == SDMediaPlayer.State.Playing)
                 {
-                    mLooper.start(100, new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            final String total = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getDuration());
-                            final String current = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getCurrentPosition());
-
-                            btn_duration.setText(current + "/" + total);
-                        }
-                    });
+                    startDurationLooper();
                 }
             }
         });
 
         mMediaPlayer.setDataRawResId(R.raw.cbg, this);
+    }
 
+    private void startDurationLooper()
+    {
+        mLooper.start(100, new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                final String total = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getDuration());
+                final String current = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getCurrentPosition());
 
+                tv_duration.setText(current + "/" + total);
+            }
+        });
     }
 
     @Override

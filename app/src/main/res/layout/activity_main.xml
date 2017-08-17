@@ -5,16 +5,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <SurfaceView
-        android:id="@+id/sfv_media"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"/>
+        android:layout_height="100dp">
 
-    <Button
-        android:id="@+id/btn_duration"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text=""/>
+        <SurfaceView
+            android:id="@+id/sfv_media"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:text=""
+            android:textColor="@android:color/holo_red_dark"/>
+    </FrameLayout>
+
 
     <Button
         android:id="@+id/btn_start"
