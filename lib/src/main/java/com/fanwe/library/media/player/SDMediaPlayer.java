@@ -33,6 +33,7 @@ public class SDMediaPlayer
 
     public SDMediaPlayer()
     {
+        //构造方法为public权限，可以单独new对象而不用全局单例对象
         init();
     }
 
