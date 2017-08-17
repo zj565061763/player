@@ -135,7 +135,10 @@ public class SDMediaPlayer
         if (mState == State.Initialized)
         {
             mPlayer.setDisplay(holder);
-        } else
+        }
+
+        final SurfaceHolder oldHolder = getSurfaceHolder();
+        if (oldHolder != holder)
         {
             if (holder != null)
             {
