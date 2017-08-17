@@ -3,9 +3,7 @@ package com.fanwe.library.media.player;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
@@ -28,7 +26,10 @@ public class SDMediaPlayer
 
     private OnStateChangeCallback mOnStateChangeCallback;
     private OnExceptionCallback mOnExceptionCallback;
+
     private OnVideoSizeChangedListener mOnVideoSizeChangedListener;
+    private OnCompletionListener mOnCompletionListener;
+    private OnPreparedListener mOnPreparedListener;
 
     public SDMediaPlayer()
     {
@@ -86,9 +87,34 @@ public class SDMediaPlayer
         mOnExceptionCallback = onExceptionCallback;
     }
 
+    /**
+     * 设置视频宽高发生变化回调
+     *
+     * @param onVideoSizeChangedListener
+     */
     public void setOnVideoSizeChangedListener(OnVideoSizeChangedListener onVideoSizeChangedListener)
     {
         mOnVideoSizeChangedListener = onVideoSizeChangedListener;
+    }
+
+    /**
+     * 设置播放完毕回调
+     *
+     * @param onCompletionListener
+     */
+    public void setOnCompletionListener(OnCompletionListener onCompletionListener)
+    {
+        mOnCompletionListener = onCompletionListener;
+    }
+
+    /**
+     * 设置准备完毕回调
+     *
+     * @param onPreparedListener
+     */
+    public void setOnPreparedListener(OnPreparedListener onPreparedListener)
+    {
+        mOnPreparedListener = onPreparedListener;
     }
 
     //----------proxy method start----------
@@ -591,25 +617,35 @@ public class SDMediaPlayer
     /**
      * 准备监听
      */
-    private OnPreparedListener mInternalOnPreparedListener = new OnPreparedListener()
+    private MediaPlayer.OnPreparedListener mInternalOnPreparedListener = new MediaPlayer.OnPreparedListener()
     {
         @Override
         public void onPrepared(MediaPlayer mp)
         {
             setState(State.Prepared);
             start();
+
+            if (mOnPreparedListener != null)
+            {
+                mOnPreparedListener.onPrepared(SDMediaPlayer.this);
+            }
         }
     };
 
     /**
      * 播放结束监听
      */
-    private OnCompletionListener mInternalOnCompletionListener = new OnCompletionListener()
+    private MediaPlayer.OnCompletionListener mInternalOnCompletionListener = new MediaPlayer.OnCompletionListener()
     {
         @Override
         public void onCompletion(MediaPlayer mp)
         {
             setState(State.Completed);
+
+            if (mOnCompletionListener != null)
+            {
+                mOnCompletionListener.onCompletion(SDMediaPlayer.this);
+            }
         }
     };
 
@@ -683,5 +719,15 @@ public class SDMediaPlayer
     public interface OnVideoSizeChangedListener
     {
         void onVideoSizeChanged(int width, int height, SDMediaPlayer player);
+    }
+
+    public interface OnCompletionListener
+    {
+        void onCompletion(SDMediaPlayer player);
+    }
+
+    public interface OnPreparedListener
+    {
+        void onPrepared(SDMediaPlayer player);
     }
 }
