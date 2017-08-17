@@ -28,6 +28,7 @@ public class SDMediaPlayer
 
     private OnStateChangeCallback mOnStateChangeCallback;
     private OnExceptionCallback mOnExceptionCallback;
+    private OnVideoSizeChangedListener mOnVideoSizeChangedListener;
 
     public SDMediaPlayer()
     {
@@ -59,9 +60,10 @@ public class SDMediaPlayer
             release();
         }
         mPlayer = new MediaPlayer();
-        mPlayer.setOnErrorListener(mOnErrorListener);
-        mPlayer.setOnPreparedListener(mOnPreparedListener);
-        mPlayer.setOnCompletionListener(mOnCompletionListener);
+        mPlayer.setOnErrorListener(mInternalOnErrorListener);
+        mPlayer.setOnPreparedListener(mInternalOnPreparedListener);
+        mPlayer.setOnCompletionListener(mInternalOnCompletionListener);
+        mPlayer.setOnVideoSizeChangedListener(mInternalOnVideoSizeChangedListener);
     }
 
     /**
@@ -82,6 +84,11 @@ public class SDMediaPlayer
     public void setOnExceptionCallback(OnExceptionCallback onExceptionCallback)
     {
         mOnExceptionCallback = onExceptionCallback;
+    }
+
+    public void setOnVideoSizeChangedListener(OnVideoSizeChangedListener onVideoSizeChangedListener)
+    {
+        mOnVideoSizeChangedListener = onVideoSizeChangedListener;
     }
 
     //----------proxy method start----------
@@ -174,6 +181,16 @@ public class SDMediaPlayer
     public boolean isLooping()
     {
         return mIsLooping;
+    }
+
+    public int getVideoWidth()
+    {
+        return mPlayer.getVideoWidth();
+    }
+
+    public int getVideoHeight()
+    {
+        return mPlayer.getVideoHeight();
     }
 
     //----------proxy method end----------
@@ -557,7 +574,7 @@ public class SDMediaPlayer
     /**
      * 错误监听
      */
-    private OnErrorListener mOnErrorListener = new OnErrorListener()
+    private OnErrorListener mInternalOnErrorListener = new OnErrorListener()
     {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra)
@@ -571,7 +588,7 @@ public class SDMediaPlayer
     /**
      * 准备监听
      */
-    private OnPreparedListener mOnPreparedListener = new OnPreparedListener()
+    private OnPreparedListener mInternalOnPreparedListener = new OnPreparedListener()
     {
         @Override
         public void onPrepared(MediaPlayer mp)
@@ -584,12 +601,27 @@ public class SDMediaPlayer
     /**
      * 播放结束监听
      */
-    private OnCompletionListener mOnCompletionListener = new OnCompletionListener()
+    private OnCompletionListener mInternalOnCompletionListener = new OnCompletionListener()
     {
         @Override
         public void onCompletion(MediaPlayer mp)
         {
             setState(State.Completed);
+        }
+    };
+
+    /**
+     * 视频宽高发生变化
+     */
+    private MediaPlayer.OnVideoSizeChangedListener mInternalOnVideoSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener()
+    {
+        @Override
+        public void onVideoSizeChanged(MediaPlayer mp, int width, int height)
+        {
+            if (mOnVideoSizeChangedListener != null)
+            {
+                mOnVideoSizeChangedListener.onVideoSizeChanged(width, height, SDMediaPlayer.this);
+            }
         }
     };
 
@@ -643,5 +675,10 @@ public class SDMediaPlayer
     public interface OnExceptionCallback
     {
         void onException(Exception e);
+    }
+
+    public interface OnVideoSizeChangedListener
+    {
+        void onVideoSizeChanged(int width, int height, SDMediaPlayer player);
     }
 }
