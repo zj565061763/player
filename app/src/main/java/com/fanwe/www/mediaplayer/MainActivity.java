@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SurfaceView sfv_media;
 
     private SDMediaPlayer mPlayer = new SDMediaPlayer();
+//    private SDMediaPlayer mPlayer = SDMediaPlayer.getInstance();
 
     private Button btn_start, btn_pause, btn_stop, btn_reset, btn_play_pause, btn_play_stop;
     private TextView tv_duration;
