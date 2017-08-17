@@ -215,7 +215,7 @@ public class SDMediaPlayer
     /**
      * 重新播放和停止播放
      */
-    public void performRestartPlayStop()
+    public void performPlayStop()
     {
         performPlayInside(true);
     }
@@ -235,9 +235,11 @@ public class SDMediaPlayer
                 {
                     if (restart)
                     {
-                        mPlayer.seekTo(0);
+                        stop();
+                    } else
+                    {
+                        pause();
                     }
-                    pause();
                 } else
                 {
                     start();
@@ -285,21 +287,6 @@ public class SDMediaPlayer
         {
             case Playing:
                 pausePlayer();
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**
-     * 恢复播放
-     */
-    public void resume()
-    {
-        switch (mState)
-        {
-            case Paused:
-                startPlayer();
                 break;
             default:
                 break;
