@@ -54,6 +54,11 @@ public class SDMediaPlayer
 
     //----------proxy method start----------
 
+    /**
+     * 返回总时长（毫秒）
+     *
+     * @return
+     */
     public int getDuration()
     {
         int value = 0;
@@ -69,6 +74,11 @@ public class SDMediaPlayer
         return value;
     }
 
+    /**
+     * 返回当前播放的进度位置（毫秒）
+     *
+     * @return
+     */
     public int getCurrentPosition()
     {
         int value = 0;
