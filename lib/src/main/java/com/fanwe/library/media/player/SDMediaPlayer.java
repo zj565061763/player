@@ -538,6 +538,7 @@ public class SDMediaPlayer
         mPlayer.reset();
 
         resetDataInternal();
+        mPlayer.setDisplay(null);
     }
 
     private void releasePlayer()
@@ -554,7 +555,6 @@ public class SDMediaPlayer
         mDataPath = null;
         mDataRawResId = 0;
         mHasInitialized = false;
-        mPlayer.setDisplay(null);
     }
 
     /**
