@@ -708,26 +708,55 @@ public class SDMediaPlayer
 
     public interface OnStateChangeCallback
     {
+        /**
+         * 播放器状态发生变化回调
+         *
+         * @param oldState
+         * @param newState
+         * @param player
+         */
         void onStateChanged(State oldState, State newState, SDMediaPlayer player);
     }
 
     public interface OnExceptionCallback
     {
+        /**
+         * 异常回调
+         *
+         * @param e
+         */
         void onException(Exception e);
     }
 
     public interface OnVideoSizeChangedListener
     {
+        /**
+         * 视频宽高发生变化回调
+         *
+         * @param width
+         * @param height
+         * @param player
+         */
         void onVideoSizeChanged(int width, int height, SDMediaPlayer player);
     }
 
     public interface OnCompletionListener
     {
+        /**
+         * 播放完毕回调
+         *
+         * @param player
+         */
         void onCompletion(SDMediaPlayer player);
     }
 
     public interface OnPreparedListener
     {
+        /**
+         * 准备完毕回调
+         *
+         * @param player
+         */
         void onPrepared(SDMediaPlayer player);
     }
 }
