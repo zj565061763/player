@@ -1,4 +1,4 @@
-package com.fanwe.lib.media.player;
+package com.fanwe.library.media.player;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
