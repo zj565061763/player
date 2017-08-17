@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mMediaPlayer.setDataRawResId(R.raw.cbg, this);
         startDurationLooper();
     }
 
@@ -115,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.btn_start:
+                mMediaPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
                 mMediaPlayer.start(); //播放
                 break;
             case R.id.btn_pause:
