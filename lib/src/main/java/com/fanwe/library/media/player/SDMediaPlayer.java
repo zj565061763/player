@@ -654,7 +654,7 @@ public class SDMediaPlayer
         {
             if (mProgressTimer == null)
             {
-                mProgressTimer = new CountDownTimer(Long.MAX_VALUE, 300)
+                mProgressTimer = new CountDownTimer(Long.MAX_VALUE, 250)
                 {
                     @Override
                     public void onTick(long millisUntilFinished)
