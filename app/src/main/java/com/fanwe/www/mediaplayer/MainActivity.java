@@ -10,7 +10,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.fanwe.library.media.player.SDMediaPlayer;
+import com.fanwe.lib.media.player.SDMediaPlayer;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
