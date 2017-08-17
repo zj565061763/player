@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
@@ -24,8 +25,11 @@ public class SDMediaPlayer
     private WeakReference<SurfaceHolder> mSurfaceHolder;
     private boolean mIsLooping;
 
+    private CountDownTimer mProgressTimer;
+
     private OnStateChangeCallback mOnStateChangeCallback;
     private OnExceptionCallback mOnExceptionCallback;
+    private OnProgressCallback mOnProgressCallback;
 
     private OnVideoSizeChangedListener mOnVideoSizeChangedListener;
     private OnCompletionListener mOnCompletionListener;
@@ -86,6 +90,17 @@ public class SDMediaPlayer
     public void setOnExceptionCallback(OnExceptionCallback onExceptionCallback)
     {
         mOnExceptionCallback = onExceptionCallback;
+    }
+
+    /**
+     * 设置播放进度回调
+     *
+     * @param onProgressCallback
+     */
+    public void setOnProgressCallback(OnProgressCallback onProgressCallback)
+    {
+        mOnProgressCallback = onProgressCallback;
+        startProgressTimerIfNeed();
     }
 
     /**
@@ -521,9 +536,19 @@ public class SDMediaPlayer
 
             mState = state;
 
-            if (mState == State.Initialized)
+            switch (mState)
             {
-                setHasInitialized(true);
+                case Initialized:
+                    setHasInitialized(true);
+                    break;
+                case Playing:
+                    startProgressTimerIfNeed();
+                    break;
+                case Paused:
+                case Stopped:
+                    notifyProgressCallback();
+                    stopProgressTimer();
+                    break;
             }
 
             if (mOnStateChangeCallback != null)
@@ -551,34 +576,34 @@ public class SDMediaPlayer
 
     private void prepareAsyncPlayer()
     {
-        setState(State.Preparing);
         mPlayer.prepareAsync();
+        setState(State.Preparing);
     }
 
     private void startPlayer()
     {
-        setState(State.Playing);
         mPlayer.start();
+        setState(State.Playing);
     }
 
     private void pausePlayer()
     {
-        setState(State.Paused);
         mPlayer.pause();
+        setState(State.Paused);
     }
 
     private void stopPlayer()
     {
-        setState(State.Stopped);
         mPlayer.stop();
+        setState(State.Stopped);
     }
 
     private void resetPlayer()
     {
         resetDataInternal();
 
-        setState(State.Idle);
         mPlayer.reset();
+        setState(State.Idle);
     }
 
     private void releasePlayer()
@@ -586,8 +611,8 @@ public class SDMediaPlayer
         resetDataInternal();
         setSurfaceHolder(null);
 
-        setState(State.Released);
         mPlayer.release();
+        setState(State.Released);
     }
 
     private void resetDataInternal()
@@ -599,6 +624,7 @@ public class SDMediaPlayer
         {
             mPlayer.setDisplay(null);
         }
+        stopProgressTimer();
     }
 
     /**
@@ -611,6 +637,55 @@ public class SDMediaPlayer
         if (mOnExceptionCallback != null)
         {
             mOnExceptionCallback.onException(e);
+        }
+    }
+
+    private void startProgressTimerIfNeed()
+    {
+        stopProgressTimer();
+
+        if (mOnProgressCallback == null)
+        {
+            //未设置回调不需要启动Timer
+            return;
+        }
+
+        if (mState == State.Playing)
+        {
+            if (mProgressTimer == null)
+            {
+                mProgressTimer = new CountDownTimer(Long.MAX_VALUE, 300)
+                {
+                    @Override
+                    public void onTick(long millisUntilFinished)
+                    {
+                        notifyProgressCallback();
+                    }
+
+                    @Override
+                    public void onFinish()
+                    {
+                    }
+                };
+                mProgressTimer.start();
+            }
+        }
+    }
+
+    private void stopProgressTimer()
+    {
+        if (mProgressTimer != null)
+        {
+            mProgressTimer.cancel();
+            mProgressTimer = null;
+        }
+    }
+
+    private void notifyProgressCallback()
+    {
+        if (mOnProgressCallback != null)
+        {
+            mOnProgressCallback.onProgress(getCurrentPosition(), getDuration(), SDMediaPlayer.this);
         }
     }
 
@@ -773,5 +848,17 @@ public class SDMediaPlayer
          * @param player
          */
         void onPrepared(SDMediaPlayer player);
+    }
+
+    public interface OnProgressCallback
+    {
+        /**
+         * 播放进度回调
+         *
+         * @param currentPosition 当前播放进度（毫秒）
+         * @param totalDuration   总时长（毫秒）
+         * @param player
+         */
+        void onProgress(int currentPosition, int totalDuration, SDMediaPlayer player);
     }
 }
