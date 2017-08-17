@@ -51,6 +51,7 @@
             android:id="@+id/btn_start"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_margin="1dp"
             android:layout_weight="1"
             android:text="开始"/>
 
@@ -58,6 +59,7 @@
             android:id="@+id/btn_pause"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_margin="1dp"
             android:layout_weight="1"
             android:text="暂停"/>
 
@@ -65,6 +67,7 @@
             android:id="@+id/btn_stop"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_margin="1dp"
             android:layout_weight="1"
             android:text="停止"/>
 
@@ -72,6 +75,7 @@
             android:id="@+id/btn_reset"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_margin="1dp"
             android:layout_weight="1"
             android:text="重置"/>
 
@@ -79,14 +83,14 @@
             android:id="@+id/btn_play_pause"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_weight="1"
+            android:layout_margin="1dp"
             android:text="播放/暂停"/>
 
         <Button
             android:id="@+id/btn_play_stop"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_weight="1"
+            android:layout_margin="1dp"
             android:text="播放/停止"/>
     </LinearLayout>
 
