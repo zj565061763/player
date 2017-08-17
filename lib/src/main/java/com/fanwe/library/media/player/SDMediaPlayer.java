@@ -277,18 +277,17 @@ public class SDMediaPlayer
      * 播放进度移动到某个位置
      *
      * @param position 某个时间点（毫秒）
+     * @return true-发起seek成功
      */
-    public void seekTo(int position)
+    public boolean seekTo(int position)
     {
-        try
+        if (hasInitialized())
         {
-            if (hasInitialized())
-            {
-                mPlayer.seekTo(position);
-            }
-        } catch (Exception e)
+            mPlayer.seekTo(position);
+            return true;
+        } else
         {
-            notifyException(e);
+            return false;
         }
     }
 
