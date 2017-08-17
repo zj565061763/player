@@ -24,6 +24,7 @@ public class SDMediaPlayer
     private boolean mHasInitialized;
 
     private WeakReference<SurfaceHolder> mSurfaceHolder;
+    private boolean mIsLooping;
 
     private OnStateChangeCallback mOnStateChangeCallback;
     private OnExceptionCallback mOnExceptionCallback;
@@ -138,6 +139,41 @@ public class SDMediaPlayer
         }
 
         setSurfaceHolder(holder);
+    }
+
+    /**
+     * 设置左右声道音量
+     *
+     * @param leftVolume  [0-1]
+     * @param rightVolume [0-1]
+     */
+    public void setVolume(float leftVolume, float rightVolume)
+    {
+        mPlayer.setVolume(leftVolume, rightVolume);
+    }
+
+    /**
+     * 设置是否循环播放
+     *
+     * @param looping
+     */
+    public void setLooping(boolean looping)
+    {
+        mIsLooping = looping;
+        if (hasInitialized())
+        {
+            mPlayer.setLooping(looping);
+        }
+    }
+
+    /**
+     * 当前是否循环播放模式
+     *
+     * @return
+     */
+    public boolean isLooping()
+    {
+        return mIsLooping;
     }
 
     //----------proxy method end----------
@@ -443,7 +479,9 @@ public class SDMediaPlayer
             if (mState == State.Initialized)
             {
                 mHasInitialized = true;
+
                 setDisplay(getSurfaceHolder());
+                setLooping(mIsLooping);
             }
 
             if (mOnStateChangeCallback != null)
