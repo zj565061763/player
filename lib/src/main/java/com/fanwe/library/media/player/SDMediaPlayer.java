@@ -33,7 +33,13 @@ public class SDMediaPlayer
     {
         if (sInstance == null)
         {
-            sInstance = new SDMediaPlayer();
+            synchronized (SDMediaPlayer.class)
+            {
+                if (sInstance == null)
+                {
+                    sInstance = new SDMediaPlayer();
+                }
+            }
         }
         return sInstance;
     }
