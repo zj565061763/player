@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
-import android.media.PlaybackParams;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
@@ -219,11 +218,6 @@ public class SDMediaPlayer
     public int getVideoHeight()
     {
         return mPlayer.getVideoHeight();
-    }
-
-    public void setPlaybackParams(PlaybackParams params)
-    {
-        mPlayer.setPlaybackParams(params);
     }
 
     //----------proxy method end----------
@@ -582,20 +576,19 @@ public class SDMediaPlayer
 
     private void resetPlayer()
     {
+        resetDataInternal();
+
         setState(State.Idle);
         mPlayer.reset();
-
-        resetDataInternal();
-        mPlayer.setDisplay(null);
     }
 
     private void releasePlayer()
     {
-        setState(State.Released);
-        mPlayer.release();
-
         resetDataInternal();
         setSurfaceHolder(null);
+
+        setState(State.Released);
+        mPlayer.release();
     }
 
     private void resetDataInternal()
@@ -603,6 +596,10 @@ public class SDMediaPlayer
         mDataPath = null;
         mDataRawResId = 0;
         setHasInitialized(false);
+        if (mState != State.Released)
+        {
+            mPlayer.setDisplay(null);
+        }
     }
 
     /**
