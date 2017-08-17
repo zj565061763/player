@@ -32,3 +32,45 @@ mPlayer.getVideoHeight(); //返回视频高度
 mPlayer.reset(); //重置
 mPlayer.release(); //释放，释放后如果需要重新使用需要调用init()方法重新初始化
 ```
+## 播放器状态
+```java
+public enum State
+{
+    /**
+     * 已经释放资源
+     */
+    Released,
+    /**
+     * 空闲，还没设置dataSource
+     */
+    Idle,
+    /**
+     * 已经设置dataSource，还未播放
+     */
+    Initialized,
+    /**
+     * 准备中
+     */
+    Preparing,
+    /**
+     * 准备完毕
+     */
+    Prepared,
+    /**
+     * 已经启动播放
+     */
+    Playing,
+    /**
+     * 已经暂停播放
+     */
+    Paused,
+    /**
+     * 已经播放完毕
+     */
+    Completed,
+    /**
+     * 调用stop方法后的状态
+     */
+    Stopped;
+}
+```
