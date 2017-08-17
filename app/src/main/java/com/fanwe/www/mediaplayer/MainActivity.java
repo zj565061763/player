@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         startDurationLooper();
+        mMediaPlayer.setLooping(true); //循环播放
     }
 
     /**
@@ -146,8 +147,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.btn_start:
-//                mMediaPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
-                mMediaPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4");
+                mMediaPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
+//                mMediaPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4");
                 mMediaPlayer.start(); //播放
                 break;
             case R.id.btn_pause:
