@@ -8,6 +8,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 
+import com.fanwe.library.looper.ISDLooper;
+import com.fanwe.library.looper.impl.SDSimpleLooper;
 import com.fanwe.library.media.player.SDMediaPlayer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
@@ -19,7 +21,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SDMediaPlayer mMediaPlayer = new SDMediaPlayer();
 
-    private Button btn_start, btn_stop;
+    private Button btn_duration, btn_start, btn_stop;
+    private ISDLooper mLooper = new SDSimpleLooper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sfv_media = (SurfaceView) findViewById(R.id.sfv_media);
+        btn_duration = (Button) findViewById(R.id.btn_duration);
         btn_start = (Button) findViewById(R.id.btn_start);
         btn_stop = (Button) findViewById(R.id.btn_stop);
         btn_start.setOnClickListener(this);
@@ -68,14 +72,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         mMediaPlayer.setDataRawResId(R.raw.cbg, this);
-    }
 
 
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        mMediaPlayer.release();
+        mLooper.start(100, new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                btn_duration.setText(SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getDuration()));
+            }
+        });
     }
 
     @Override
@@ -90,6 +96,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
         }
+    }
 
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        mMediaPlayer.release();
+        mLooper.stop();
     }
 }

@@ -52,6 +52,20 @@ public class SDMediaPlayer
         mPlayer.setOnCompletionListener(mOnCompletionListener);
     }
 
+    //----------proxy method start----------
+
+    public int getDuration()
+    {
+        return mPlayer.getDuration();
+    }
+
+    public int getCurrentPosition()
+    {
+        return mPlayer.getCurrentPosition();
+    }
+
+    //----------proxy method end----------
+
     /**
      * 设置状态变化回调
      *
