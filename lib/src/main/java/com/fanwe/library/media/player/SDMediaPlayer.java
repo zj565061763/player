@@ -9,6 +9,8 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
+import java.lang.ref.WeakReference;
+
 public class SDMediaPlayer
 {
     private static SDMediaPlayer sInstance;
@@ -20,6 +22,8 @@ public class SDMediaPlayer
     private int mDataRawResId;
 
     private boolean mHasInitialized;
+
+    private WeakReference<SurfaceHolder> mSurfaceHolder;
 
     private OnStateChangeCallback mOnStateChangeCallback;
     private OnExceptionCallback mOnExceptionCallback;
@@ -57,6 +61,26 @@ public class SDMediaPlayer
         mPlayer.setOnErrorListener(mOnErrorListener);
         mPlayer.setOnPreparedListener(mOnPreparedListener);
         mPlayer.setOnCompletionListener(mOnCompletionListener);
+    }
+
+    /**
+     * 设置状态变化回调
+     *
+     * @param onStateChangeCallback
+     */
+    public void setOnStateChangeCallback(OnStateChangeCallback onStateChangeCallback)
+    {
+        mOnStateChangeCallback = onStateChangeCallback;
+    }
+
+    /**
+     * 设置异常回调
+     *
+     * @param onExceptionCallback
+     */
+    public void setOnExceptionCallback(OnExceptionCallback onExceptionCallback)
+    {
+        mOnExceptionCallback = onExceptionCallback;
     }
 
     //----------proxy method start----------
@@ -105,41 +129,42 @@ public class SDMediaPlayer
      * 设置SurfaceHolder
      *
      * @param holder
-     * @return true-设置成功
      */
-    public boolean setDisplay(SurfaceHolder holder)
+    public void setDisplay(SurfaceHolder holder)
     {
         if (mState == State.Initialized)
         {
             mPlayer.setDisplay(holder);
-            return true;
         } else
         {
-            return false;
+            if (holder != null)
+            {
+                mSurfaceHolder = new WeakReference<>(holder);
+            } else
+            {
+                mSurfaceHolder = null;
+            }
         }
     }
 
     //----------proxy method end----------
 
     /**
-     * 设置状态变化回调
+     * 返回设置的SurfaceHolder
      *
-     * @param onStateChangeCallback
+     * @return
      */
-    public void setOnStateChangeCallback(OnStateChangeCallback onStateChangeCallback)
+    public SurfaceHolder getSurfaceHolder()
     {
-        mOnStateChangeCallback = onStateChangeCallback;
+        if (mSurfaceHolder != null)
+        {
+            return mSurfaceHolder.get();
+        } else
+        {
+            return null;
+        }
     }
 
-    /**
-     * 设置异常回调
-     *
-     * @param onExceptionCallback
-     */
-    public void setOnExceptionCallback(OnExceptionCallback onExceptionCallback)
-    {
-        mOnExceptionCallback = onExceptionCallback;
-    }
 
     //----------data start----------
 
@@ -411,6 +436,7 @@ public class SDMediaPlayer
             if (mState == State.Initialized)
             {
                 mHasInitialized = true;
+                setDisplay(getSurfaceHolder());
             }
 
             if (mOnStateChangeCallback != null)
@@ -465,6 +491,7 @@ public class SDMediaPlayer
         mDataPath = null;
         mDataRawResId = 0;
         mHasInitialized = false;
+        setDisplay(null);
     }
 
     /**
