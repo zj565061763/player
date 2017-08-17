@@ -78,16 +78,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onStateChanged(SDMediaPlayer.State oldState, SDMediaPlayer.State newState, SDMediaPlayer player)
             {
                 Log.i(TAG, "onStateChanged:" + String.valueOf(newState));
-                if (newState == SDMediaPlayer.State.Playing)
-                {
-                    startDurationLooper();
-                }
             }
         });
 
         mMediaPlayer.setDataRawResId(R.raw.cbg, this);
+        startDurationLooper();
     }
 
+    /**
+     * 开始进度查询
+     */
     private void startDurationLooper()
     {
         mLooper.start(100, new Runnable()
@@ -95,9 +95,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run()
             {
-                final String total = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getDuration());
-                final String current = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getCurrentPosition());
+                int currentPosition = mMediaPlayer.getCurrentPosition();
+                int totalDuration = mMediaPlayer.getDuration();
+                if (mMediaPlayer.getState() == SDMediaPlayer.State.Stopped)
+                {
+                    currentPosition = 0;
+                }
 
+                final String current = SDDateUtil.formatDuring2hhmmss(currentPosition);
+                final String total = SDDateUtil.formatDuring2hhmmss(totalDuration);
                 tv_duration.setText(current + "/" + total);
             }
         });
