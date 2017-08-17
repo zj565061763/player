@@ -12,6 +12,14 @@ mPlayer.setOnStateChangeCallback(new SDMediaPlayer.OnStateChangeCallback()
         //状态变化回调
     }
 });
+mPlayer.setOnProgressCallback(new SDMediaPlayer.OnProgressCallback()
+{
+    @Override
+    public void onProgress(int currentPosition, int totalDuration, SDMediaPlayer player)
+    {
+        //设置播放进度回调，每隔250毫秒触发一次此方法，用于更新播放进度
+    }
+});
 mPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
 mPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4"); //设置在线视频地址或者本地文件路径
 
