@@ -7,6 +7,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.text.TextUtils;
+import android.view.SurfaceHolder;
 
 public class SDMediaPlayer
 {
@@ -92,6 +93,24 @@ public class SDMediaPlayer
                 break;
         }
         return value;
+    }
+
+    /**
+     * 设置SurfaceHolder
+     *
+     * @param holder
+     * @return true-设置成功
+     */
+    public boolean setDisplay(SurfaceHolder holder)
+    {
+        if (mState == State.Initialized)
+        {
+            mPlayer.setDisplay(holder);
+            return true;
+        } else
+        {
+            return false;
+        }
     }
 
     //----------proxy method end----------
