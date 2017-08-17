@@ -462,8 +462,11 @@ public class SDMediaPlayer
      */
     public void reset()
     {
-        stop();
-        resetPlayer();
+        if (mState != State.Released)
+        {
+            stop();
+            resetPlayer();
+        }
     }
 
     /**
