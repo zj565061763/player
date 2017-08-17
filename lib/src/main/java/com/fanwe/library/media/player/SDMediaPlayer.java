@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
+import android.media.PlaybackParams;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
@@ -220,6 +221,11 @@ public class SDMediaPlayer
         return mPlayer.getVideoHeight();
     }
 
+    public void setPlaybackParams(PlaybackParams params)
+    {
+        mPlayer.setPlaybackParams(params);
+    }
+
     //----------proxy method end----------
 
     private void setSurfaceHolder(SurfaceHolder holder)
@@ -252,7 +258,6 @@ public class SDMediaPlayer
             return null;
         }
     }
-
 
     //----------data start----------
 
@@ -525,16 +530,29 @@ public class SDMediaPlayer
 
             if (mState == State.Initialized)
             {
-                mHasInitialized = true;
-
-                setDisplay(getSurfaceHolder());
-                setLooping(mIsLooping);
+                setHasInitialized(true);
             }
 
             if (mOnStateChangeCallback != null)
             {
                 mOnStateChangeCallback.onStateChanged(oldState, mState, this);
             }
+        }
+    }
+
+    /**
+     * 设置是否已经初始化
+     *
+     * @param hasInitialized
+     */
+    private void setHasInitialized(boolean hasInitialized)
+    {
+        mHasInitialized = hasInitialized;
+
+        if (mHasInitialized)
+        {
+            setDisplay(getSurfaceHolder());
+            setLooping(mIsLooping);
         }
     }
 
@@ -584,7 +602,7 @@ public class SDMediaPlayer
     {
         mDataPath = null;
         mDataRawResId = 0;
-        mHasInitialized = false;
+        setHasInitialized(false);
     }
 
     /**
