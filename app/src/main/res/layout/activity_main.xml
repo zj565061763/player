@@ -13,25 +13,37 @@
     <Button
         android:id="@+id/btn_duration"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text=""/>
 
     <Button
         android:id="@+id/btn_start"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="开始"/>
 
     <Button
         android:id="@+id/btn_pause"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="暂停"/>
 
     <Button
         android:id="@+id/btn_stop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="停止"/>
+
+    <Button
+        android:id="@+id/btn_play_pause"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="播放/暂停"/>
+
+    <Button
+        android:id="@+id/btn_play_stop"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="播放/停止"/>
 
 </LinearLayout>

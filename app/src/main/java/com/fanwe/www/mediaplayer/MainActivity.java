@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SDMediaPlayer mMediaPlayer = new SDMediaPlayer();
 
-    private Button btn_duration, btn_start, btn_pause, btn_stop;
+    private Button btn_duration, btn_start, btn_pause, btn_stop, btn_play_pause, btn_play_stop;
     private ISDLooper mLooper = new SDSimpleLooper();
 
     @Override
@@ -34,9 +34,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_start = (Button) findViewById(R.id.btn_start);
         btn_pause = (Button) findViewById(R.id.btn_pause);
         btn_stop = (Button) findViewById(R.id.btn_stop);
+        btn_play_pause = (Button) findViewById(R.id.btn_play_pause);
+        btn_play_stop = (Button) findViewById(R.id.btn_play_stop);
         btn_start.setOnClickListener(this);
         btn_pause.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
+        btn_play_pause.setOnClickListener(this);
+        btn_play_stop.setOnClickListener(this);
 
         sfv_media.getHolder().addCallback(new SurfaceHolder.Callback()
         {
@@ -105,6 +109,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.stop();
+                break;
+            case R.id.btn_play_pause:
+                mMediaPlayer.performPlayPause();
+                break;
+            case R.id.btn_play_stop:
+                mMediaPlayer.performPlayStop();
                 break;
         }
     }
