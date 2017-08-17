@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SDMediaPlayer mMediaPlayer = new SDMediaPlayer();
 
-    private Button btn_duration, btn_start, btn_stop;
+    private Button btn_duration, btn_start, btn_pause, btn_stop;
     private ISDLooper mLooper = new SDSimpleLooper();
 
     @Override
@@ -32,8 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sfv_media = (SurfaceView) findViewById(R.id.sfv_media);
         btn_duration = (Button) findViewById(R.id.btn_duration);
         btn_start = (Button) findViewById(R.id.btn_start);
+        btn_pause = (Button) findViewById(R.id.btn_pause);
         btn_stop = (Button) findViewById(R.id.btn_stop);
         btn_start.setOnClickListener(this);
+        btn_pause.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
 
         sfv_media.getHolder().addCallback(new SurfaceHolder.Callback()
@@ -68,20 +70,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onStateChanged(SDMediaPlayer.State oldState, SDMediaPlayer.State newState, SDMediaPlayer player)
             {
                 Log.i(TAG, "onStateChanged:" + String.valueOf(newState));
+                if (newState == SDMediaPlayer.State.Playing)
+                {
+                    mLooper.start(100, new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            final String total = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getDuration());
+                            final String current = SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getCurrentPosition());
+
+                            btn_duration.setText(current + "/" + total);
+                        }
+                    });
+                }
             }
         });
 
         mMediaPlayer.setDataRawResId(R.raw.cbg, this);
 
 
-        mLooper.start(100, new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                btn_duration.setText(SDDateUtil.formatDuring2hhmmss(mMediaPlayer.getDuration()));
-            }
-        });
     }
 
     @Override
@@ -92,8 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_start:
                 mMediaPlayer.start();
                 break;
+            case R.id.btn_pause:
+                mMediaPlayer.pause();
+                break;
             case R.id.btn_stop:
-
+                mMediaPlayer.stop();
                 break;
         }
     }
