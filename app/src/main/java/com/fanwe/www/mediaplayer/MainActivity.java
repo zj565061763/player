@@ -115,22 +115,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.btn_start:
-                mMediaPlayer.start();
+                mMediaPlayer.start(); //播放
                 break;
             case R.id.btn_pause:
-                mMediaPlayer.pause();
+                mMediaPlayer.pause(); //暂停
                 break;
             case R.id.btn_stop:
-                mMediaPlayer.stop();
+                mMediaPlayer.stop(); //停止
                 break;
             case R.id.btn_reset:
-                mMediaPlayer.reset();
+                mMediaPlayer.reset(); //重置
                 break;
             case R.id.btn_play_pause:
-                mMediaPlayer.performPlayPause();
+                mMediaPlayer.performPlayPause(); // 播放/暂停
                 break;
             case R.id.btn_play_stop:
-                mMediaPlayer.performPlayStop();
+                mMediaPlayer.performPlayStop(); // 播放/停止
                 break;
         }
     }
