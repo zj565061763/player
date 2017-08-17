@@ -152,7 +152,6 @@ public class SDMediaPlayer
         {
             case Playing:
             case Paused:
-            case Stopped:
             case Completed:
                 value = mPlayer.getCurrentPosition();
                 break;
