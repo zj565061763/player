@@ -51,11 +51,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void surfaceCreated(SurfaceHolder holder)
             {
+
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
             {
+
             }
 
             @Override
@@ -78,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onStateChanged(SDMediaPlayer.State oldState, SDMediaPlayer.State newState, SDMediaPlayer player)
             {
                 Log.i(TAG, "onStateChanged:" + String.valueOf(newState));
+                if (newState == SDMediaPlayer.State.Initialized)
+                {
+                    mMediaPlayer.setDisplay(sfv_media.getHolder());
+                }
             }
         });
 
