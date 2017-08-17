@@ -7,6 +7,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.fanwe.library.looper.ISDLooper;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button btn_start, btn_pause, btn_stop, btn_reset, btn_play_pause, btn_play_stop;
     private TextView tv_duration;
+    private SeekBar sb_progress;
     private ISDLooper mLooper = new SDSimpleLooper();
 
     @Override
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sfv_media = (SurfaceView) findViewById(R.id.sfv_media);
+        sb_progress = (SeekBar) findViewById(R.id.sb_progress);
         tv_duration = (TextView) findViewById(R.id.tv_duration);
         btn_start = (Button) findViewById(R.id.btn_start);
         btn_pause = (Button) findViewById(R.id.btn_pause);
@@ -45,6 +48,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_reset.setOnClickListener(this);
         btn_play_pause.setOnClickListener(this);
         btn_play_stop.setOnClickListener(this);
+
+        sb_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                if (fromUser)
+                {
+                    mMediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
+
+            }
+        });
 
         sfv_media.getHolder().addCallback(new SurfaceHolder.Callback()
         {
@@ -103,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     currentPosition = 0;
                 }
 
+                sb_progress.setMax(totalDuration);
+                sb_progress.setProgress(currentPosition);
+
                 final String current = SDDateUtil.formatDuring2hhmmss(currentPosition);
                 final String total = SDDateUtil.formatDuring2hhmmss(totalDuration);
                 tv_duration.setText(current + "/" + total);
@@ -116,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.btn_start:
-                mMediaPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
+//                mMediaPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
+                mMediaPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4");
                 mMediaPlayer.start(); //播放
                 break;
             case R.id.btn_pause:
