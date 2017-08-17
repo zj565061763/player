@@ -137,6 +137,13 @@ public class SDMediaPlayer
             mPlayer.setDisplay(holder);
         }
 
+        setSurfaceHolder(holder);
+    }
+
+    //----------proxy method end----------
+
+    private void setSurfaceHolder(SurfaceHolder holder)
+    {
         final SurfaceHolder oldHolder = getSurfaceHolder();
         if (oldHolder != holder)
         {
@@ -150,14 +157,12 @@ public class SDMediaPlayer
         }
     }
 
-    //----------proxy method end----------
-
     /**
      * 返回设置的SurfaceHolder
      *
      * @return
      */
-    public SurfaceHolder getSurfaceHolder()
+    private SurfaceHolder getSurfaceHolder()
     {
         if (mSurfaceHolder != null)
         {
@@ -487,6 +492,7 @@ public class SDMediaPlayer
         mPlayer.release();
 
         resetDataInternal();
+        setSurfaceHolder(null);
     }
 
     private void resetDataInternal()
@@ -494,7 +500,7 @@ public class SDMediaPlayer
         mDataPath = null;
         mDataRawResId = 0;
         mHasInitialized = false;
-        setDisplay(null);
+        mPlayer.setDisplay(null);
     }
 
     /**
