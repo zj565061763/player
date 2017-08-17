@@ -90,7 +90,7 @@ public class SDMediaPlayer
      * @param path 本地文件路径或者链接地址
      * @return
      */
-    public boolean setDataSource(String path)
+    public boolean setDataPath(String path)
     {
         try
         {
