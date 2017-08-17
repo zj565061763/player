@@ -56,12 +56,32 @@ public class SDMediaPlayer
 
     public int getDuration()
     {
-        return mPlayer.getDuration();
+        int value = 0;
+        switch (mState)
+        {
+            case Playing:
+            case Paused:
+            case Stopped:
+            case Completed:
+                value = mPlayer.getDuration();
+                break;
+        }
+        return value;
     }
 
     public int getCurrentPosition()
     {
-        return mPlayer.getCurrentPosition();
+        int value = 0;
+        switch (mState)
+        {
+            case Playing:
+            case Paused:
+            case Stopped:
+            case Completed:
+                value = mPlayer.getCurrentPosition();
+                break;
+        }
+        return value;
     }
 
     //----------proxy method end----------
