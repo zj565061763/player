@@ -2,6 +2,9 @@
 在刚开始使用android中的MediaPlayer的时候由于对整个播放的流程不太熟悉会经常在不合适的状态下调用了某个方法导致异常，这个库对MediaPlayer
 进行了封装，内部会处理各种状态下的是否合法调用处理，并且定义了播放的各种状态，使用起来更方便
 
+## Gradle
+`compile 'com.fanwe.android:mediaplayer:1.0.0'`
+
 ## 常用方法
 ```java
 mPlayer.setOnStateChangeCallback(new SDMediaPlayer.OnStateChangeCallback()
