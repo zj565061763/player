@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 17081701
-        versionName "1.0.0"
+        versionCode 17083101
+        versionName "1.0.1"
 
 
     }
@@ -33,9 +33,9 @@ publish {
     userOrg = 'zj565061763'
     groupId = 'com.fanwe.android'
     artifactId = 'mediaplayer'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'fanwe android media player library'
-    website = 'https://github.com/zj565061763/MediaPlayer'
+    website = 'https://github.com/zj565061763/mediaplayer'
 }
 
 tasks.withType(Javadoc) {
