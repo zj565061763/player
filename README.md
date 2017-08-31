@@ -3,7 +3,7 @@
 进行了封装，内部会处理各种状态下的是否合法调用处理，并且定义了播放的各种状态，使用起来更方便
 
 ## Gradle
-`compile 'com.fanwe.android:mediaplayer:1.0.0'`
+`compile 'com.fanwe.android:mediaplayer:1.0.1'`
 
 ## 常用方法
 ```java
