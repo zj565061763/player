@@ -35,7 +35,7 @@ public class SDMediaPlayer
     private String mDataPath;
     private int mDataRawResId;
 
-    private boolean mHasInitialized;
+    private boolean mIsDataInitialized;
 
     private WeakReference<SurfaceHolder> mSurfaceHolder;
     private boolean mIsLooping;
@@ -223,7 +223,7 @@ public class SDMediaPlayer
     public void setLooping(boolean looping)
     {
         mIsLooping = looping;
-        if (hasInitialized())
+        if (isDataInitialized())
         {
             mPlayer.setLooping(looping);
         }
@@ -372,13 +372,13 @@ public class SDMediaPlayer
     }
 
     /**
-     * 是否已经初始化
+     * 播放数据是否已经初始化
      *
      * @return
      */
-    public boolean hasInitialized()
+    public boolean isDataInitialized()
     {
-        return mHasInitialized;
+        return mIsDataInitialized;
     }
 
     /**
@@ -389,7 +389,7 @@ public class SDMediaPlayer
      */
     public boolean seekTo(int position)
     {
-        if (hasInitialized())
+        if (isDataInitialized())
         {
             mPlayer.seekTo(position);
             return true;
@@ -424,7 +424,7 @@ public class SDMediaPlayer
     {
         try
         {
-            if (hasInitialized())
+            if (isDataInitialized())
             {
                 if (isPlaying())
                 {
@@ -554,7 +554,7 @@ public class SDMediaPlayer
             switch (mState)
             {
                 case Initialized:
-                    setHasInitialized(true);
+                    setDataInitialized(true);
                     break;
                 case Playing:
                     startProgressTimerIfNeed();
@@ -574,15 +574,15 @@ public class SDMediaPlayer
     }
 
     /**
-     * 设置是否已经初始化
+     * 设置播放数据是否已经初始化
      *
-     * @param hasInitialized
+     * @param dataInitialized
      */
-    private void setHasInitialized(boolean hasInitialized)
+    private void setDataInitialized(boolean dataInitialized)
     {
-        mHasInitialized = hasInitialized;
+        mIsDataInitialized = dataInitialized;
 
-        if (mHasInitialized)
+        if (mIsDataInitialized)
         {
             setDisplay(getSurfaceHolder());
             setLooping(mIsLooping);
@@ -634,7 +634,7 @@ public class SDMediaPlayer
     {
         mDataPath = null;
         mDataRawResId = 0;
-        setHasInitialized(false);
+        setDataInitialized(false);
         if (mState != State.Released)
         {
             mPlayer.setDisplay(null);
