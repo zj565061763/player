@@ -32,10 +32,10 @@ dependencies {
 publish {
     userOrg = 'zj565061763'
     groupId = 'com.fanwe.android'
-    artifactId = 'mediaplayer'
+    artifactId = 'player'
     publishVersion = '1.0.1'
-    desc = 'fanwe android media player library'
-    website = 'https://github.com/zj565061763/mediaplayer'
+    desc = 'fanwe android player library'
+    website = 'https://github.com/zj565061763/player'
 }
 
 tasks.withType(Javadoc) {
