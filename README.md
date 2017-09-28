@@ -3,7 +3,19 @@
 进行了封装，内部会处理各种状态下的是否合法调用处理，并且定义了播放的各种状态，使用起来更方便
 
 ## Gradle
-`compile 'com.fanwe.android:mediaplayer:1.0.1'`
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+        compile 'com.github.zj565061763:player:1.0.2'
+}
+
+```
 
 ## 常用方法
 ```java
