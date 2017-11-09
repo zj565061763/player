@@ -3,19 +3,7 @@
 进行了封装，内部会处理各种状态下的是否合法调用处理，并且定义了播放的各种状态，使用起来更方便
 
 ## Gradle
-```
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-dependencies {
-        compile 'com.github.zj565061763:player:1.0.3'
-}
-
-```
+[![](https://jitpack.io/v/zj565061763/player.svg)](https://jitpack.io/#zj565061763/player)
 
 ## 常用方法
 ```java
