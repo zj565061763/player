@@ -25,9 +25,9 @@ import android.view.SurfaceHolder;
 
 import java.lang.ref.WeakReference;
 
-public class SDMediaPlayer
+public class FMediaPlayer
 {
-    private static SDMediaPlayer sInstance;
+    private static FMediaPlayer sInstance;
 
     private MediaPlayer mPlayer;
     private State mState = State.Idle;
@@ -50,21 +50,21 @@ public class SDMediaPlayer
     private OnCompletionListener mOnCompletionListener;
     private OnPreparedListener mOnPreparedListener;
 
-    public SDMediaPlayer()
+    public FMediaPlayer()
     {
         //构造方法为public权限，可以单独new对象而不用全局单例对象
         init();
     }
 
-    public static SDMediaPlayer getInstance()
+    public static FMediaPlayer getInstance()
     {
         if (sInstance == null)
         {
-            synchronized (SDMediaPlayer.class)
+            synchronized (FMediaPlayer.class)
             {
                 if (sInstance == null)
                 {
-                    sInstance = new SDMediaPlayer();
+                    sInstance = new FMediaPlayer();
                 }
             }
         }
@@ -700,7 +700,7 @@ public class SDMediaPlayer
     {
         if (mOnProgressCallback != null)
         {
-            mOnProgressCallback.onProgress(getCurrentPosition(), getDuration(), SDMediaPlayer.this);
+            mOnProgressCallback.onProgress(getCurrentPosition(), getDuration(), FMediaPlayer.this);
         }
     }
 
@@ -732,7 +732,7 @@ public class SDMediaPlayer
 
             if (mOnPreparedListener != null)
             {
-                mOnPreparedListener.onPrepared(SDMediaPlayer.this);
+                mOnPreparedListener.onPrepared(FMediaPlayer.this);
             }
         }
     };
@@ -749,7 +749,7 @@ public class SDMediaPlayer
 
             if (mOnCompletionListener != null)
             {
-                mOnCompletionListener.onCompletion(SDMediaPlayer.this);
+                mOnCompletionListener.onCompletion(FMediaPlayer.this);
             }
         }
     };
@@ -764,7 +764,7 @@ public class SDMediaPlayer
         {
             if (mOnVideoSizeChangedListener != null)
             {
-                mOnVideoSizeChangedListener.onVideoSizeChanged(width, height, SDMediaPlayer.this);
+                mOnVideoSizeChangedListener.onVideoSizeChanged(width, height, FMediaPlayer.this);
             }
         }
     };
@@ -820,7 +820,7 @@ public class SDMediaPlayer
          * @param newState
          * @param player
          */
-        void onStateChanged(State oldState, State newState, SDMediaPlayer player);
+        void onStateChanged(State oldState, State newState, FMediaPlayer player);
     }
 
     public interface OnExceptionCallback
@@ -842,7 +842,7 @@ public class SDMediaPlayer
          * @param height
          * @param player
          */
-        void onVideoSizeChanged(int width, int height, SDMediaPlayer player);
+        void onVideoSizeChanged(int width, int height, FMediaPlayer player);
     }
 
     public interface OnCompletionListener
@@ -852,7 +852,7 @@ public class SDMediaPlayer
          *
          * @param player
          */
-        void onCompletion(SDMediaPlayer player);
+        void onCompletion(FMediaPlayer player);
     }
 
     public interface OnPreparedListener
@@ -862,7 +862,7 @@ public class SDMediaPlayer
          *
          * @param player
          */
-        void onPrepared(SDMediaPlayer player);
+        void onPrepared(FMediaPlayer player);
     }
 
     public interface OnProgressCallback
@@ -874,6 +874,6 @@ public class SDMediaPlayer
          * @param totalDuration   总时长（毫秒）
          * @param player
          */
-        void onProgress(int currentPosition, int totalDuration, SDMediaPlayer player);
+        void onProgress(int currentPosition, int totalDuration, FMediaPlayer player);
     }
 }

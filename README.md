@@ -7,18 +7,18 @@
 
 ## 常用方法
 ```java
-mPlayer.setOnStateChangeCallback(new SDMediaPlayer.OnStateChangeCallback()
+mPlayer.setOnStateChangeCallback(new FMediaPlayer.OnStateChangeCallback()
 {
     @Override
-    public void onStateChanged(SDMediaPlayer.State oldState, SDMediaPlayer.State newState, SDMediaPlayer player)
+    public void onStateChanged(FMediaPlayer.State oldState, FMediaPlayer.State newState, FMediaPlayer player)
     {
         //状态变化回调
     }
 });
-mPlayer.setOnProgressCallback(new SDMediaPlayer.OnProgressCallback()
+mPlayer.setOnProgressCallback(new FMediaPlayer.OnProgressCallback()
 {
     @Override
-    public void onProgress(int currentPosition, int totalDuration, SDMediaPlayer player)
+    public void onProgress(int currentPosition, int totalDuration, FMediaPlayer player)
     {
         //设置播放进度回调，每隔250毫秒触发一次此方法，用于更新播放进度
     }
