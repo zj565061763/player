@@ -24,7 +24,7 @@ mPlayer.setOnProgressCallback(new FMediaPlayer.OnProgressCallback()
     }
 });
 mPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
-mPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4"); //设置在线视频地址或者本地文件路径
+mPlayer.setDataPath("http://xxx.xxx.mp4"); //设置在线视频地址或者本地文件路径
 
 mPlayer.start(); //播放
 mPlayer.pause(); //暂停

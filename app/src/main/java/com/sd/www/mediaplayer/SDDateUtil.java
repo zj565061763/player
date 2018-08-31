@@ -1,4 +1,4 @@
-package com.fanwe.www.mediaplayer;
+package com.sd.www.mediaplayer;
 
 import java.text.DateFormat;
 import java.text.ParseException;

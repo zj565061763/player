@@ -1,4 +1,4 @@
-package com.fanwe.www.mediaplayer;
+package com.sd.www.mediaplayer;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.fanwe.lib.player.FMediaPlayer;
+import com.sd.lib.player.FMediaPlayer;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
@@ -32,15 +32,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sfv_media = (SurfaceView) findViewById(R.id.sfv_media);
-        sb_progress = (SeekBar) findViewById(R.id.sb_progress);
-        tv_duration = (TextView) findViewById(R.id.tv_duration);
-        btn_start = (Button) findViewById(R.id.btn_start);
-        btn_pause = (Button) findViewById(R.id.btn_pause);
-        btn_stop = (Button) findViewById(R.id.btn_stop);
-        btn_reset = (Button) findViewById(R.id.btn_reset);
-        btn_play_pause = (Button) findViewById(R.id.btn_play_pause);
-        btn_play_stop = (Button) findViewById(R.id.btn_play_stop);
+        sfv_media = findViewById(R.id.sfv_media);
+        sb_progress = findViewById(R.id.sb_progress);
+        tv_duration = findViewById(R.id.tv_duration);
+        btn_start = findViewById(R.id.btn_start);
+        btn_pause = findViewById(R.id.btn_pause);
+        btn_stop = findViewById(R.id.btn_stop);
+        btn_reset = findViewById(R.id.btn_reset);
+        btn_play_pause = findViewById(R.id.btn_play_pause);
+        btn_play_stop = findViewById(R.id.btn_play_stop);
         btn_start.setOnClickListener(this);
         btn_pause.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             case R.id.btn_start:
                 mPlayer.setDataRawResId(R.raw.cbg, this); //设置要播放的数据
-//                mPlayer.setDataPath("http://liveimage.fanwe.net/public/attachment/201707/31/14/597ed39b46c5a.mp4");
                 mPlayer.start(); //播放
                 break;
             case R.id.btn_pause:
