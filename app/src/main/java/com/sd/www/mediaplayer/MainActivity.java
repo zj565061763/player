@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onException(Exception e)
             {
-                Log.i(TAG, "onException:" + String.valueOf(e));
+                Log.i(TAG, "onException:" + e);
             }
         });
         mPlayer.addOnStateChangeCallback(new FMediaPlayer.OnStateChangeCallback()
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStateChanged(FMediaPlayer player, FMediaPlayer.State oldState, FMediaPlayer.State newState)
             {
-                Log.i(TAG, "onStateChanged:" + String.valueOf(newState));
+                Log.i(TAG, "onStateChanged:" + newState);
             }
         });
         mPlayer.setOnProgressCallback(new FMediaPlayer.OnProgressCallback()
