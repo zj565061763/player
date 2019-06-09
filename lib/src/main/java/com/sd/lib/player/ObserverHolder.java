@@ -22,6 +22,11 @@ class ObserverHolder<T>
         mList.remove(observer);
     }
 
+    public boolean isEmpty()
+    {
+        return mList.isEmpty();
+    }
+
     public void foreach(ForeachCallback<T> callback)
     {
         for (T observer : mList)

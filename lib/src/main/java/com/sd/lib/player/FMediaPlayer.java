@@ -76,6 +76,9 @@ public class FMediaPlayer
      */
     public void addOnStateChangeCallback(OnStateChangeCallback callback)
     {
+        if (mOnStateChangeCallbackHolder == null)
+            mOnStateChangeCallbackHolder = new ObserverHolder<>();
+
         mOnStateChangeCallbackHolder.add(callback);
     }
 
@@ -86,7 +89,12 @@ public class FMediaPlayer
      */
     public void removeOnStateChangeCallback(OnStateChangeCallback callback)
     {
-        mOnStateChangeCallbackHolder.remove(callback);
+        if (mOnStateChangeCallbackHolder != null)
+        {
+            mOnStateChangeCallbackHolder.remove(callback);
+            if (mOnStateChangeCallbackHolder.isEmpty())
+                mOnStateChangeCallbackHolder = null;
+        }
     }
 
     /**
@@ -537,14 +545,17 @@ public class FMediaPlayer
                     break;
             }
 
-            mOnStateChangeCallbackHolder.foreach(new ObserverHolder.ForeachCallback<OnStateChangeCallback>()
+            if (mOnStateChangeCallbackHolder != null)
             {
-                @Override
-                public void onNext(OnStateChangeCallback observer)
+                mOnStateChangeCallbackHolder.foreach(new ObserverHolder.ForeachCallback<OnStateChangeCallback>()
                 {
-                    observer.onStateChanged(FMediaPlayer.this, oldState, mState);
-                }
-            });
+                    @Override
+                    public void onNext(OnStateChangeCallback observer)
+                    {
+                        observer.onStateChanged(FMediaPlayer.this, oldState, mState);
+                    }
+                });
+            }
         }
     }
 
