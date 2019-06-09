@@ -27,7 +27,7 @@ public class FMediaPlayer
 
     private CountDownTimer mProgressTimer;
 
-    private OnStateChangeCallback mOnStateChangeCallback;
+    private ObserverHolder<OnStateChangeCallback> mOnStateChangeCallbackHolder;
     private OnExceptionCallback mOnExceptionCallback;
     private OnProgressCallback mOnProgressCallback;
 
@@ -70,13 +70,23 @@ public class FMediaPlayer
     }
 
     /**
-     * 设置状态变化回调
+     * 添加状态变化回调
      *
-     * @param onStateChangeCallback
+     * @param callback
      */
-    public void setOnStateChangeCallback(OnStateChangeCallback onStateChangeCallback)
+    public void addOnStateChangeCallback(OnStateChangeCallback callback)
     {
-        mOnStateChangeCallback = onStateChangeCallback;
+        mOnStateChangeCallbackHolder.add(callback);
+    }
+
+    /**
+     * 移除状态变化回调
+     *
+     * @param callback
+     */
+    public void removeOnStateChangeCallback(OnStateChangeCallback callback)
+    {
+        mOnStateChangeCallbackHolder.remove(callback);
     }
 
     /**
@@ -527,8 +537,14 @@ public class FMediaPlayer
                     break;
             }
 
-            if (mOnStateChangeCallback != null)
-                mOnStateChangeCallback.onStateChanged(this, oldState, mState);
+            mOnStateChangeCallbackHolder.foreach(new ObserverHolder.ForeachCallback<OnStateChangeCallback>()
+            {
+                @Override
+                public void onNext(OnStateChangeCallback observer)
+                {
+                    observer.onStateChanged(FMediaPlayer.this, oldState, mState);
+                }
+            });
         }
     }
 

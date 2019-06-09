@@ -15,13 +15,11 @@ import com.sd.lib.player.FMediaPlayer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
-
     private static final String TAG = "MainActivity";
 
     private SurfaceView sfv_media;
 
-    private FMediaPlayer mPlayer = new FMediaPlayer();
-//    private FMediaPlayer mPlayer = FMediaPlayer.getInstance();
+    private final FMediaPlayer mPlayer = new FMediaPlayer();
 
     private Button btn_start, btn_pause, btn_stop, btn_reset, btn_play_pause, btn_play_stop;
     private TextView tv_duration;
@@ -100,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "onException:" + String.valueOf(e));
             }
         });
-        mPlayer.setOnStateChangeCallback(new FMediaPlayer.OnStateChangeCallback()
+        mPlayer.addOnStateChangeCallback(new FMediaPlayer.OnStateChangeCallback()
         {
             @Override
-            public void onStateChanged(FMediaPlayer.State oldState, FMediaPlayer.State newState, FMediaPlayer player)
+            public void onStateChanged(FMediaPlayer player, FMediaPlayer.State oldState, FMediaPlayer.State newState)
             {
                 Log.i(TAG, "onStateChanged:" + String.valueOf(newState));
             }
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPlayer.setOnProgressCallback(new FMediaPlayer.OnProgressCallback()
         {
             @Override
-            public void onProgress(int currentPosition, int totalDuration, FMediaPlayer player)
+            public void onProgress(FMediaPlayer player, int currentPosition, int totalDuration)
             {
                 sb_progress.setMax(totalDuration);
                 sb_progress.setProgress(currentPosition);
