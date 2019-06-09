@@ -695,7 +695,7 @@ public class FMediaPlayer
         public boolean onError(MediaPlayer mp, int what, int extra)
         {
             resetPlayer();
-            notifyException(new RuntimeException(mp + ":" + String.valueOf(what) + "," + extra));
+            notifyException(new RuntimeException(mp + ":" + what + "," + extra));
             return true;
         }
     };
