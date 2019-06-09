@@ -48,9 +48,7 @@ public class FMediaPlayer
             synchronized (FMediaPlayer.class)
             {
                 if (sInstance == null)
-                {
                     sInstance = new FMediaPlayer();
-                }
             }
         }
         return sInstance;
@@ -62,9 +60,8 @@ public class FMediaPlayer
     public void init()
     {
         if (mPlayer != null)
-        {
             release();
-        }
+
         mPlayer = new MediaPlayer();
         mPlayer.setOnErrorListener(mInternalOnErrorListener);
         mPlayer.setOnPreparedListener(mInternalOnPreparedListener);
@@ -142,17 +139,16 @@ public class FMediaPlayer
      */
     public int getDuration()
     {
-        int value = 0;
         switch (mState)
         {
             case Playing:
             case Paused:
             case Stopped:
             case Completed:
-                value = mPlayer.getDuration();
-                break;
+                return mPlayer.getDuration();
+            default:
+                return 0;
         }
-        return value;
     }
 
     /**
@@ -162,16 +158,15 @@ public class FMediaPlayer
      */
     public int getCurrentPosition()
     {
-        int value = 0;
         switch (mState)
         {
             case Playing:
             case Paused:
             case Completed:
-                value = mPlayer.getCurrentPosition();
-                break;
+                return mPlayer.getCurrentPosition();
+            default:
+                return 0;
         }
-        return value;
     }
 
     /**
@@ -181,12 +176,10 @@ public class FMediaPlayer
      */
     public void setDisplay(SurfaceHolder holder)
     {
-        if (mState == State.Initialized)
-        {
-            mPlayer.setDisplay(holder);
-        }
-
         setSurfaceHolder(holder);
+
+        if (mState == State.Initialized)
+            mPlayer.setDisplay(holder);
     }
 
     /**
@@ -208,10 +201,9 @@ public class FMediaPlayer
     public void setLooping(boolean looping)
     {
         mIsLooping = looping;
+
         if (isDataInitialized())
-        {
             mPlayer.setLooping(looping);
-        }
     }
 
     /**
@@ -238,16 +230,10 @@ public class FMediaPlayer
 
     private void setSurfaceHolder(SurfaceHolder holder)
     {
-        final SurfaceHolder oldHolder = getSurfaceHolder();
-        if (oldHolder != holder)
+        final SurfaceHolder old = getSurfaceHolder();
+        if (old != holder)
         {
-            if (holder != null)
-            {
-                mSurfaceHolder = new WeakReference<>(holder);
-            } else
-            {
-                mSurfaceHolder = null;
-            }
+            mSurfaceHolder = old == null ? null : new WeakReference<>(holder);
         }
     }
 
@@ -258,13 +244,7 @@ public class FMediaPlayer
      */
     private SurfaceHolder getSurfaceHolder()
     {
-        if (mSurfaceHolder != null)
-        {
-            return mSurfaceHolder.get();
-        } else
-        {
-            return null;
-        }
+        return mSurfaceHolder == null ? null : mSurfaceHolder.get();
     }
 
     //----------data start----------
@@ -287,13 +267,11 @@ public class FMediaPlayer
      */
     public boolean setDataPath(String path)
     {
+        if (!TextUtils.isEmpty(mDataPath) && mDataPath.equals(path))
+            return true;
+
         try
         {
-            if (!TextUtils.isEmpty(mDataPath) && mDataPath.equals(path))
-            {
-                return true;
-            }
-
             reset();
             mPlayer.setDataSource(path);
             mDataPath = path;
@@ -314,15 +292,13 @@ public class FMediaPlayer
      */
     public boolean setDataRawResId(int rawResId, Context context)
     {
+        if (mDataRawResId == rawResId)
+            return true;
+
         try
         {
-            if (mDataRawResId == rawResId)
-            {
-                return true;
-            }
-
             reset();
-            AssetFileDescriptor afd = context.getResources().openRawResourceFd(rawResId);
+            final AssetFileDescriptor afd = context.getResources().openRawResourceFd(rawResId);
             mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             mDataRawResId = rawResId;
             setState(State.Initialized);
@@ -389,7 +365,7 @@ public class FMediaPlayer
      */
     public void performPlayPause()
     {
-        performPlayInside(false);
+        togglePlayInside(false);
     }
 
     /**
@@ -397,33 +373,33 @@ public class FMediaPlayer
      */
     public void performPlayStop()
     {
-        performPlayInside(true);
+        togglePlayInside(true);
     }
 
     /**
-     * 模拟暂停恢复播放
+     * 暂停恢复播放
      *
      * @param restart true-恢复的时候重头播放
      */
-    private void performPlayInside(boolean restart)
+    private void togglePlayInside(boolean restart)
     {
+        if (!isDataInitialized())
+            return;
+
         try
         {
-            if (isDataInitialized())
+            if (isPlaying())
             {
-                if (isPlaying())
+                if (restart)
                 {
-                    if (restart)
-                    {
-                        stop();
-                    } else
-                    {
-                        pause();
-                    }
+                    stop();
                 } else
                 {
-                    start();
+                    pause();
                 }
+            } else
+            {
+                start();
             }
         } catch (Exception e)
         {
@@ -552,9 +528,7 @@ public class FMediaPlayer
             }
 
             if (mOnStateChangeCallback != null)
-            {
-                mOnStateChangeCallback.onStateChanged(oldState, mState, this);
-            }
+                mOnStateChangeCallback.onStateChanged(this, oldState, mState);
         }
     }
 
@@ -621,9 +595,8 @@ public class FMediaPlayer
         mDataRawResId = 0;
         setDataInitialized(false);
         if (mState != State.Released)
-        {
             mPlayer.setDisplay(null);
-        }
+
         stopProgressTimer();
     }
 
@@ -635,9 +608,7 @@ public class FMediaPlayer
     private void notifyException(Exception e)
     {
         if (mOnExceptionCallback != null)
-        {
             mOnExceptionCallback.onException(e);
-        }
     }
 
     private void startProgressTimerIfNeed()
@@ -684,16 +655,14 @@ public class FMediaPlayer
     private void notifyProgressCallback()
     {
         if (mOnProgressCallback != null)
-        {
-            mOnProgressCallback.onProgress(getCurrentPosition(), getDuration(), FMediaPlayer.this);
-        }
+            mOnProgressCallback.onProgress(FMediaPlayer.this, getCurrentPosition(), getDuration());
     }
 
     //----------listener start----------
     /**
      * 错误监听
      */
-    private OnErrorListener mInternalOnErrorListener = new OnErrorListener()
+    private final OnErrorListener mInternalOnErrorListener = new OnErrorListener()
     {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra)
@@ -707,7 +676,7 @@ public class FMediaPlayer
     /**
      * 准备监听
      */
-    private MediaPlayer.OnPreparedListener mInternalOnPreparedListener = new MediaPlayer.OnPreparedListener()
+    private final MediaPlayer.OnPreparedListener mInternalOnPreparedListener = new MediaPlayer.OnPreparedListener()
     {
         @Override
         public void onPrepared(MediaPlayer mp)
@@ -716,16 +685,14 @@ public class FMediaPlayer
             start();
 
             if (mOnPreparedListener != null)
-            {
                 mOnPreparedListener.onPrepared(FMediaPlayer.this);
-            }
         }
     };
 
     /**
      * 播放结束监听
      */
-    private MediaPlayer.OnCompletionListener mInternalOnCompletionListener = new MediaPlayer.OnCompletionListener()
+    private final MediaPlayer.OnCompletionListener mInternalOnCompletionListener = new MediaPlayer.OnCompletionListener()
     {
         @Override
         public void onCompletion(MediaPlayer mp)
@@ -733,24 +700,20 @@ public class FMediaPlayer
             setState(State.Completed);
 
             if (mOnCompletionListener != null)
-            {
                 mOnCompletionListener.onCompletion(FMediaPlayer.this);
-            }
         }
     };
 
     /**
      * 视频宽高发生变化
      */
-    private MediaPlayer.OnVideoSizeChangedListener mInternalOnVideoSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener()
+    private final MediaPlayer.OnVideoSizeChangedListener mInternalOnVideoSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener()
     {
         @Override
         public void onVideoSizeChanged(MediaPlayer mp, int width, int height)
         {
             if (mOnVideoSizeChangedListener != null)
-            {
-                mOnVideoSizeChangedListener.onVideoSizeChanged(width, height, FMediaPlayer.this);
-            }
+                mOnVideoSizeChangedListener.onVideoSizeChanged(FMediaPlayer.this, width, height);
         }
     };
 
@@ -801,11 +764,11 @@ public class FMediaPlayer
         /**
          * 播放器状态发生变化回调
          *
+         * @param player
          * @param oldState
          * @param newState
-         * @param player
          */
-        void onStateChanged(State oldState, State newState, FMediaPlayer player);
+        void onStateChanged(FMediaPlayer player, State oldState, State newState);
     }
 
     public interface OnExceptionCallback
@@ -823,11 +786,11 @@ public class FMediaPlayer
         /**
          * 视频宽高发生变化回调
          *
+         * @param player
          * @param width
          * @param height
-         * @param player
          */
-        void onVideoSizeChanged(int width, int height, FMediaPlayer player);
+        void onVideoSizeChanged(FMediaPlayer player, int width, int height);
     }
 
     public interface OnCompletionListener
@@ -855,10 +818,10 @@ public class FMediaPlayer
         /**
          * 播放进度回调
          *
+         * @param player
          * @param currentPosition 当前播放进度（毫秒）
          * @param totalDuration   总时长（毫秒）
-         * @param player
          */
-        void onProgress(int currentPosition, int totalDuration, FMediaPlayer player);
+        void onProgress(FMediaPlayer player, int currentPosition, int totalDuration);
     }
 }
