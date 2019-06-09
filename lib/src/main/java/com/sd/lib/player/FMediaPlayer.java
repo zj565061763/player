@@ -478,11 +478,11 @@ public class FMediaPlayer
      */
     public void reset()
     {
-        if (mState != State.Released)
-        {
-            stop();
-            resetPlayer();
-        }
+        if (mState == State.Released)
+            return;
+
+        stop();
+        resetPlayer();
     }
 
     /**
