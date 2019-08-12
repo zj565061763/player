@@ -503,7 +503,7 @@ public class FMediaPlayer
     }
 
     /**
-     * 重置播放器，一般用于关闭播放界面的时候调用
+     * 重置播放器，重置之后需要重新设置数据才能播放
      */
     public void reset()
     {
@@ -515,7 +515,7 @@ public class FMediaPlayer
     }
 
     /**
-     * 释放播放器，用于不再需要播放器的时候调用，调用此方法后，需要手动调用init()方法初始化后才可以使用
+     * 释放播放器，用于不再需要播放器的时候调用，调用此方法后，如果还要继续使用的话，需要调用init()方法初始化
      */
     public void release()
     {
