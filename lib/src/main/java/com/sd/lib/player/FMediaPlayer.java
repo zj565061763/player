@@ -16,6 +16,7 @@ public class FMediaPlayer
 
     private MediaPlayer mPlayer;
     private State mState = State.Idle;
+    private boolean mHasInit;
 
     private String mDataPath;
     private int mDataRawResId;
@@ -59,14 +60,22 @@ public class FMediaPlayer
      */
     public void init()
     {
-        if (mPlayer != null)
-            release();
+        if (mHasInit)
+            return;
+
+        mHasInit = true;
 
         mPlayer = new MediaPlayer();
         mPlayer.setOnErrorListener(mInternalOnErrorListener);
         mPlayer.setOnPreparedListener(mInternalOnPreparedListener);
         mPlayer.setOnCompletionListener(mInternalOnCompletionListener);
         mPlayer.setOnVideoSizeChangedListener(mInternalOnVideoSizeChangedListener);
+    }
+
+    private void checkInit()
+    {
+        if (!mHasInit)
+            throw new RuntimeException(this + " has not been init");
     }
 
     /**
@@ -430,6 +439,8 @@ public class FMediaPlayer
      */
     public void start()
     {
+        checkInit();
+
         switch (mState)
         {
             case Initialized:
@@ -542,6 +553,11 @@ public class FMediaPlayer
                 case Stopped:
                     notifyProgressCallback();
                     stopProgressTimer();
+                    break;
+                case Released:
+                    mHasInit = false;
+                    break;
+                default:
                     break;
             }
 
