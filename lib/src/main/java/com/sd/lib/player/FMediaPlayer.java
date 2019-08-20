@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
@@ -538,17 +540,8 @@ public class FMediaPlayer
                     break;
             }
 
-            if (mOnStateChangeCallbackHolder != null)
-            {
-                mOnStateChangeCallbackHolder.foreach(new ObserverHolder.ForeachCallback<OnStateChangeCallback>()
-                {
-                    @Override
-                    public void onNext(OnStateChangeCallback observer)
-                    {
-                        observer.onStateChanged(FMediaPlayer.this, oldState, mState);
-                    }
-                });
-            }
+            final NotifyStateChangeRunnable runnable = new NotifyStateChangeRunnable(oldState, mState);
+            runnable.runOnUiThread();
         }
     }
 
@@ -687,6 +680,44 @@ public class FMediaPlayer
                 mOnVideoSizeChangedListener.onVideoSizeChanged(FMediaPlayer.this, width, height);
         }
     };
+
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private final class NotifyStateChangeRunnable implements Runnable
+    {
+        private final State mOldState;
+        private final State mNewState;
+
+        public NotifyStateChangeRunnable(State oldState, State newState)
+        {
+            mOldState = oldState;
+            mNewState = newState;
+        }
+
+        @Override
+        public void run()
+        {
+            if (mOnStateChangeCallbackHolder != null)
+            {
+                mOnStateChangeCallbackHolder.foreach(new ObserverHolder.ForeachCallback<OnStateChangeCallback>()
+                {
+                    @Override
+                    public void onNext(OnStateChangeCallback observer)
+                    {
+                        observer.onStateChanged(FMediaPlayer.this, mOldState, mNewState);
+                    }
+                });
+            }
+        }
+
+        public void runOnUiThread()
+        {
+            if (Looper.myLooper() == Looper.getMainLooper())
+                run();
+            else
+                mHandler.post(this);
+        }
+    }
 
     //----------listener end----------
 
