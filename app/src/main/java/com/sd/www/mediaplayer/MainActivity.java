@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.sd.lib.looper.FLooper;
+import com.sd.lib.looper.impl.FSimpleLooper;
 import com.sd.lib.player.FMediaPlayer;
 
 
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn_start, btn_pause, btn_stop, btn_reset, btn_play_pause, btn_play_stop;
     private TextView tv_duration;
     private SeekBar sb_progress;
+
+    private final FLooper mLooper = new FSimpleLooper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -103,24 +107,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStateChanged(FMediaPlayer player, FMediaPlayer.State oldState, FMediaPlayer.State newState)
             {
+                if (newState == FMediaPlayer.State.Playing)
+                    mLooper.start(mPlayTimeRunnable);
+                else if (newState == FMediaPlayer.State.Stopped || newState == FMediaPlayer.State.Paused)
+                    mLooper.stop();
+
                 Log.i(TAG, "onStateChanged:" + newState);
             }
         });
-        mPlayer.setOnProgressCallback(new FMediaPlayer.OnProgressCallback()
-        {
-            @Override
-            public void onProgress(FMediaPlayer player, int currentPosition, int totalDuration)
-            {
-                sb_progress.setMax(totalDuration);
-                sb_progress.setProgress(currentPosition);
-
-                final String total = SDDateUtil.formatDuring2hhmmss(totalDuration);
-                final String current = SDDateUtil.formatDuring2hhmmss(currentPosition);
-                tv_duration.setText(current + "/" + total);
-            }
-        });
-
     }
+
+    private final Runnable mPlayTimeRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            final int currentPosition = mPlayer.getCurrentPosition();
+            final int totalDuration = mPlayer.getDuration();
+
+            sb_progress.setMax(totalDuration);
+            sb_progress.setProgress(currentPosition);
+
+            final String total = SDDateUtil.formatDuring2hhmmss(totalDuration);
+            final String current = SDDateUtil.formatDuring2hhmmss(currentPosition);
+            tv_duration.setText(current + "/" + total);
+        }
+    };
 
     @Override
     public void onClick(View v)
@@ -154,5 +166,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         super.onDestroy();
         mPlayer.release();
+        mLooper.stop();
     }
 }
