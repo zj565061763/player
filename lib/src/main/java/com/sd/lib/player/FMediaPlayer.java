@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
@@ -26,11 +25,8 @@ public class FMediaPlayer
     private WeakReference<SurfaceHolder> mSurfaceHolder;
     private boolean mIsLooping;
 
-    private CountDownTimer mProgressTimer;
-
     private ObserverHolder<OnStateChangeCallback> mOnStateChangeCallbackHolder;
     private OnExceptionCallback mOnExceptionCallback;
-    private OnProgressCallback mOnProgressCallback;
 
     private OnVideoSizeChangedListener mOnVideoSizeChangedListener;
     private OnCompletionListener mOnCompletionListener;
@@ -114,17 +110,6 @@ public class FMediaPlayer
     public void setOnExceptionCallback(OnExceptionCallback onExceptionCallback)
     {
         mOnExceptionCallback = onExceptionCallback;
-    }
-
-    /**
-     * 设置播放进度回调
-     *
-     * @param onProgressCallback
-     */
-    public void setOnProgressCallback(OnProgressCallback onProgressCallback)
-    {
-        mOnProgressCallback = onProgressCallback;
-        startProgressTimerIfNeed();
     }
 
     /**
@@ -546,14 +531,6 @@ public class FMediaPlayer
                 case Initialized:
                     setDataInitialized(true);
                     break;
-                case Playing:
-                    startProgressTimerIfNeed();
-                    break;
-                case Paused:
-                case Stopped:
-                    notifyProgressCallback();
-                    stopProgressTimer();
-                    break;
                 case Released:
                     mHasInit = false;
                     break;
@@ -639,8 +616,6 @@ public class FMediaPlayer
         setDataInitialized(false);
         if (mState != State.Released)
             mPlayer.setDisplay(null);
-
-        stopProgressTimer();
     }
 
     /**
@@ -652,53 +627,6 @@ public class FMediaPlayer
     {
         if (mOnExceptionCallback != null)
             mOnExceptionCallback.onException(e);
-    }
-
-    private void startProgressTimerIfNeed()
-    {
-        stopProgressTimer();
-
-        if (mOnProgressCallback == null)
-        {
-            //未设置回调不需要启动Timer
-            return;
-        }
-
-        if (mState == State.Playing)
-        {
-            if (mProgressTimer == null)
-            {
-                mProgressTimer = new CountDownTimer(Long.MAX_VALUE, 250)
-                {
-                    @Override
-                    public void onTick(long millisUntilFinished)
-                    {
-                        notifyProgressCallback();
-                    }
-
-                    @Override
-                    public void onFinish()
-                    {
-                    }
-                };
-                mProgressTimer.start();
-            }
-        }
-    }
-
-    private void stopProgressTimer()
-    {
-        if (mProgressTimer != null)
-        {
-            mProgressTimer.cancel();
-            mProgressTimer = null;
-        }
-    }
-
-    private void notifyProgressCallback()
-    {
-        if (mOnProgressCallback != null)
-            mOnProgressCallback.onProgress(FMediaPlayer.this, getCurrentPosition(), getDuration());
     }
 
     //----------listener start----------
@@ -854,17 +782,5 @@ public class FMediaPlayer
          * @param player
          */
         void onPrepared(FMediaPlayer player);
-    }
-
-    public interface OnProgressCallback
-    {
-        /**
-         * 播放进度回调
-         *
-         * @param player
-         * @param currentPosition 当前播放进度（毫秒）
-         * @param totalDuration   总时长（毫秒）
-         */
-        void onProgress(FMediaPlayer player, int currentPosition, int totalDuration);
     }
 }
