@@ -72,12 +72,6 @@ public class FMediaPlayer
         setState(State.Idle);
     }
 
-    private void checkInit()
-    {
-        if (!mHasInit)
-            throw new RuntimeException(this + " has not been init");
-    }
-
     /**
      * 添加状态变化回调
      *
@@ -428,8 +422,6 @@ public class FMediaPlayer
      */
     public void start()
     {
-        checkInit();
-
         switch (mState)
         {
             case Initialized:
