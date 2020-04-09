@@ -613,7 +613,7 @@ public class FMediaPlayer
     private void notifyException(Exception e)
     {
         if (mOnExceptionCallback != null)
-            mOnExceptionCallback.onException(e);
+            mOnExceptionCallback.onException(this, e);
     }
 
     //----------listener start----------
@@ -772,9 +772,10 @@ public class FMediaPlayer
         /**
          * 异常回调
          *
+         * @param player
          * @param e
          */
-        void onException(Exception e);
+        void onException(FMediaPlayer player, Exception e);
     }
 
     public interface OnVideoSizeChangedListener

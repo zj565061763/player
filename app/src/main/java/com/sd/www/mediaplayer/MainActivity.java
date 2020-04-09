@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPlayer.setOnExceptionCallback(new FMediaPlayer.OnExceptionCallback()
         {
             @Override
-            public void onException(Exception e)
+            public void onException(FMediaPlayer player, Exception e)
             {
                 Log.i(TAG, "onException:" + e);
             }
