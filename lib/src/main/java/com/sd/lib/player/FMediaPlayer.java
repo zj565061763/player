@@ -68,6 +68,8 @@ public class FMediaPlayer
         mPlayer.setOnPreparedListener(mInternalOnPreparedListener);
         mPlayer.setOnCompletionListener(mInternalOnCompletionListener);
         mPlayer.setOnVideoSizeChangedListener(mInternalOnVideoSizeChangedListener);
+
+        setState(State.Idle);
     }
 
     private void checkInit()
