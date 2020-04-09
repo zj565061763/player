@@ -527,9 +527,6 @@ public class FMediaPlayer
                 case Initialized:
                     setDataInitialized(true);
                     break;
-                case Released:
-                    mHasInit = false;
-                    break;
                 default:
                     break;
             }
@@ -594,6 +591,7 @@ public class FMediaPlayer
 
         mPlayer.release();
         setState(State.Released);
+        mHasInit = false;
     }
 
     private void resetDataInternal()
