@@ -1,18 +1,34 @@
-package com.sd.www.mediaplayer;
+package com.sd.www.mediaplayer.utils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class SDDateUtil
+public class FDateUtil
 {
-    public static final long MILLISECONDS_DAY = 1000 * 60 * 60 * 24;
-    public static final long MILLISECONDS_HOUR = 1000 * 60 * 60;
-    public static final long MILLISECONDS_MINUTES = 1000 * 60;
-    public static final long MILLISECONDS_SECOND = 1000;
+    /**
+     * 1秒的毫秒数
+     */
+    public static final long MILLIS_SECOND = 1000;
+    /**
+     * 1分钟的毫秒数
+     */
+    public static final long MILLIS_MINUTES = MILLIS_SECOND * 60;
+    /**
+     * 1小时的毫秒数
+     */
+    public static final long MILLIS_HOUR = MILLIS_MINUTES * 60;
+    /**
+     * 1天的毫秒数
+     */
+    public static final long MILLIS_DAY = MILLIS_HOUR * 24;
 
     public static final String SEPARATOR_DEFAULT = ":";
+
+    private FDateUtil()
+    {
+    }
 
     /**
      * 返回"天"部分的数值
@@ -22,7 +38,7 @@ public class SDDateUtil
      */
     public static long getDuringDay(long mss)
     {
-        return mss / MILLISECONDS_DAY;
+        return mss / MILLIS_DAY;
     }
 
     /**
@@ -33,7 +49,7 @@ public class SDDateUtil
      */
     public static long getDuringHours(long mss)
     {
-        return (mss % MILLISECONDS_DAY) / MILLISECONDS_HOUR;
+        return (mss % MILLIS_DAY) / MILLIS_HOUR;
     }
 
     /**
@@ -44,7 +60,7 @@ public class SDDateUtil
      */
     public static long getDuringMinutes(long mss)
     {
-        return (mss % MILLISECONDS_HOUR) / MILLISECONDS_MINUTES;
+        return (mss % MILLIS_HOUR) / MILLIS_MINUTES;
     }
 
     /**
@@ -55,7 +71,7 @@ public class SDDateUtil
      */
     public static long getDuringSeconds(long mss)
     {
-        return (mss % MILLISECONDS_MINUTES) / MILLISECONDS_SECOND;
+        return (mss % MILLIS_MINUTES) / MILLIS_SECOND;
     }
 
     /**
@@ -66,7 +82,7 @@ public class SDDateUtil
      */
     public static long getTotalMinutes(long mss)
     {
-        return mss / MILLISECONDS_MINUTES;
+        return mss / MILLIS_MINUTES;
     }
 
     /**
@@ -77,42 +93,42 @@ public class SDDateUtil
      */
     public static long getTotalHours(long mss)
     {
-        return mss / MILLISECONDS_HOUR;
+        return mss / MILLIS_HOUR;
     }
 
     public static String getTotalMinutesFormat(long mss)
     {
-        long value = SDDateUtil.getTotalMinutes(mss);
+        long value = getTotalMinutes(mss);
         return formatValue(value);
     }
 
     public static String getTotalHoursFormat(long mss)
     {
-        long value = SDDateUtil.getTotalHours(mss);
+        long value = getTotalHours(mss);
         return formatValue(value);
     }
 
     public static String getDuringSecondsFormat(long mss)
     {
-        long value = SDDateUtil.getDuringSeconds(mss);
+        long value = getDuringSeconds(mss);
         return formatValue(value);
     }
 
     public static String getDuringMinutesFormat(long mss)
     {
-        long value = SDDateUtil.getDuringMinutes(mss);
+        long value = getDuringMinutes(mss);
         return formatValue(value);
     }
 
     public static String getDuringHoursFormat(long mss)
     {
-        long value = SDDateUtil.getDuringHours(mss);
+        long value = getDuringHours(mss);
         return formatValue(value);
     }
 
     public static String getDuringDaysFormat(long mss)
     {
-        long value = SDDateUtil.getDuringDay(mss);
+        long value = getDuringDay(mss);
         return formatValue(value);
     }
 
@@ -380,19 +396,25 @@ public class SDDateUtil
         return format.format(date);
     }
 
+    /**
+     * 返回当前时间到指定时间点的格式化描述
+     *
+     * @param timestamp
+     * @return
+     */
     public static String formatDuringFrom(long timestamp)
     {
         long current = System.currentTimeMillis();
         long timeSpan = current - timestamp;
 
-        if (timeSpan <= 0 || timeSpan < MILLISECONDS_MINUTES)
+        if (timeSpan <= 0 || timeSpan < MILLIS_MINUTES)
         {
             return "刚刚";
-        } else if (timeSpan < MILLISECONDS_HOUR)
+        } else if (timeSpan < MILLIS_HOUR)
         {
             long min = getDuringMinutes(timeSpan);
             return min + "分钟前";
-        } else if (timeSpan < MILLISECONDS_DAY)
+        } else if (timeSpan < MILLIS_DAY)
         {
             try
             {

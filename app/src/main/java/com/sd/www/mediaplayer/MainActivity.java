@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.sd.lib.looper.FLooper;
 import com.sd.lib.looper.impl.FSimpleLooper;
 import com.sd.lib.player.FMediaPlayer;
+import com.sd.www.mediaplayer.utils.FDateUtil;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
@@ -128,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             sb_progress.setMax(totalDuration);
             sb_progress.setProgress(currentPosition);
 
-            final String total = SDDateUtil.formatDuring2hhmmss(totalDuration);
-            final String current = SDDateUtil.formatDuring2hhmmss(currentPosition);
+            final String total = FDateUtil.formatDuring2hhmmss(totalDuration);
+            final String current = FDateUtil.formatDuring2hhmmss(currentPosition);
             tv_duration.setText(current + "/" + total);
         }
     };
