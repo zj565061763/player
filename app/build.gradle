@@ -24,7 +24,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.github.zj565061763:looper:1.1.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation project(':lib')
+
+    implementation 'com.github.zj565061763:looper:1.1.2'
 }
