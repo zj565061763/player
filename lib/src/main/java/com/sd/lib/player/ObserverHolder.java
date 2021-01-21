@@ -1,35 +1,36 @@
 package com.sd.lib.player;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class ObserverHolder<T>
 {
-    private final List<T> mList = new CopyOnWriteArrayList<>();
+    private final Map<T, String> mHolder = new ConcurrentHashMap<>();
 
     public void add(T observer)
     {
         if (observer == null)
             return;
-        if (mList.contains(observer))
-            return;
 
-        mList.add(observer);
+        mHolder.put(observer, "");
     }
 
     public void remove(T observer)
     {
-        mList.remove(observer);
+        if (observer == null)
+            return;
+
+        mHolder.remove(observer);
     }
 
     public boolean isEmpty()
     {
-        return mList.isEmpty();
+        return mHolder.isEmpty();
     }
 
     public void foreach(ForeachCallback<T> callback)
     {
-        for (T observer : mList)
+        for (T observer : mHolder.keySet())
         {
             callback.onNext(observer);
         }
